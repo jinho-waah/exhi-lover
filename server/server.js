@@ -1,3 +1,4 @@
+const path = require("path");
 const fs = require("fs");
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -157,8 +158,6 @@ app.get("/api/gallery/:galleryId", (req, res) => {
     }
   });
 });
-
-const path = require("path");
 
 // Serve static assets
 app.use(express.static(path.join(__dirname, "../public_html")));

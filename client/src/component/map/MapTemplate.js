@@ -5,7 +5,7 @@ import { useMemo } from "react";
 import { useEffect, useState } from "react";
 
 const MapBox = styled.div`
-  height: 21rem;
+  height: 120vw;
   width: 100%;
   align-items: center;
   margin: 0 auto;
@@ -30,6 +30,8 @@ const MapTemplate = () => {
     errMsg: null,
     isLoading: true,
   });
+
+  const [flag, setFlag] = useState(false); // true -> marker 활성화 (위치 활성화를 하지 않으면 no marker)
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -63,11 +65,22 @@ const MapTemplate = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (!state.isLoading) {
+      setFlag(true);
+    }
+  }, [state.isLoading]);
+
   return (
     <MapBox>
-      <Map state={state.center} />
+      {/* {state.isLoading ? (
+        <Map state={state.center} flag={flag} />
+      ) : (
+        <Map state={state.center} flag={flag} />
+      )} */}
+      <Map state={state.center} flag={flag} />
     </MapBox>
   );
 };
 
-export default React.memo(MapTemplate);
+export default MapTemplate;
