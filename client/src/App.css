@@ -1,0 +1,19 @@
+.App{
+    text-align: center
+}
+.Body{
+    background-color: #000000;
+    /*background-color: #0e0e0e;*/
+    /*color: #efefef;*/
+    min-height: 100vh;
+    padding-right: 0px;
+    padding-left: 0px;
+}
+.Nav{
+    height: 100px;
+    padding-top: 45px;
+}
+.Logo{
+    height: 20vh;
+    max-height: 80px;
+}
