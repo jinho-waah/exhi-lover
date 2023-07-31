@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import DetailViewer from "./DetailViewer";
-import SubHeader from "../header/SubHeader";
-import Footer from "../common/Footer";
+import SubHeader from "../layout/SubHeader";
+import Footer from "../layout/Footer";
 import {
   fetchShowByShowId,
   fetchShowTagsId,

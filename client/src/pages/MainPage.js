@@ -1,13 +1,12 @@
 import React from "react";
-import MainButton from "../component/items/MainButton";
-import MainHeader from "../component/header/MainHeader";
+import MainButton from "../component/button/MainButton";
+import MainHeader from "../component/layout/MainHeader";
 import styled from "styled-components";
 import GlobalStyle from "../lib/styles/fontStyle";
-import Footer from "../component/common/Footer";
+import Footer from "../component/layout/Footer";
 
 const MainImage = styled.div`
   width: 100%;
-  height: 0;
   padding-bottom: 50.25%;
   position: relative;
   overflow: hidden;
@@ -18,7 +17,6 @@ const MainImage = styled.div`
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.6s ease;
   }
 `;
 
@@ -29,29 +27,17 @@ const InformBox = styled.div`
 `;
 
 const InformTitle = styled.div`
-  padding: 2.3rem 1.1rem 0 1.1rem;
+  padding: 34px 0px 0px 20px;
   font-family: "Happiness-Sans-Title", sans-serif;
-  font-size: 1.99rem;
-  padding-bottom: 0.5rem;
+  font-size: 30px;
+  font: bold;
   white-space: nowrap;
-
-  @media (max-width: 768px) {
-    font-size: 1.8rem;
-  }
-
-  @media (max-width: 480px) {
-    font-size: 1.8rem;
-  }
 `;
 
 const InformContext = styled.div`
-  padding: 1.1rem 1.444rem 1.1rem 1.444rem;
+  padding: 8px 23px 17px 23px;
   font-family: "Happiness-Sans-Bold", sans-serif;
-  font-size: 1.11rem;
-  font-weight: bold;
-  p {
-    margin: 0.3rem 0; /* add this line to adjust the margin */
-  }
+  font-size: 18px;
 `;
 
 function MainPage() {
@@ -113,7 +99,6 @@ function MainPage() {
   } while (randomIndex2 === randomIndex);
   const splitQuote = quotes[randomIndex].split("-");
   // const splitQuote2 = quotes[randomIndex2].split("-");
-
   // const splitKoreanQuote = quotesKorean[randomIndex].split("-");
   return (
     <>
@@ -129,9 +114,8 @@ function MainPage() {
           <p
             style={{
               textAlign: "right",
-              paddingRight: "1.11rem",
-              fontSize: "0.89rem",
-              // paddingBottom: "0.9rem",
+              paddingRight: "17px",
+              fontSize: "14px",
             }}
           >{`- ${splitQuote[1]}`}</p>
         </InformContext>

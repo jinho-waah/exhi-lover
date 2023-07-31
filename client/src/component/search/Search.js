@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useCallback } from "react";
 import PostTemplate from "../post/PostTemplate";
-import SearchBar from "../items/SearchBar";
+import SearchBar from "../button/SearchBar";
 import styled from "styled-components";
-import HorizontalLine from "../common/HorizontalLine";
+import HorizontalLine from "../layout/HorizontalLine";
 import { fetchShowsbySearchQuery } from "../../lib/api/Api";
 
 const ShowContent = styled.div`
   text-align: left;
-  font-size: 2.5rem;
+  font-size: 40px;
   font-weight: bold;
   line-height: 1.2;
-  padding: 0.4rem 0 0 1.1rem;
+  padding: 6px 0 0 18px;
   color: white;
   background-color: #000000;
   font-family: "Happiness-Sans-Title", sans-serif;

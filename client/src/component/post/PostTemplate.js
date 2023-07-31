@@ -6,12 +6,9 @@ import axios from "axios";
 import { fetchShowTagsId, fetchTagName } from "../../lib/api/Api";
 
 const TemplateBlock = styled.div`
-  padding-top: 0.2rem;
+  padding-top: 2px;
   box-sizing: border-box;
-  background: #000000;
-  display: flex;
   align-items: center;
-  justify-content: center;
   flex-flow: row wrap;
 `;
 

@@ -3,7 +3,7 @@ import React from "react";
 import GlobalStyle from "../../lib/styles/fontStyle";
 import { Link } from "react-router-dom";
 import FileDownloadDoneSharpIcon from "@mui/icons-material/FileDownloadDoneSharp";
-import HorizontalLine from "../common/HorizontalLine";
+import HorizontalLine from "../layout/HorizontalLine";
 import LocationOnSharpIcon from "@mui/icons-material/LocationOnSharp";
 import Person2SharpIcon from "@mui/icons-material/Person2Sharp";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
@@ -15,7 +15,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useEffect, useState } from "react";
-import MyCalendar from "../common/MyCalendar";
+import MyCalendar from "../calendar/MyCalendar";
 import { fetchGalleryInfo } from "../../lib/api/Api";
 import Instagram from "@mui/icons-material/Instagram";
 
@@ -480,7 +480,7 @@ const DetailViewer = ({ show, color, tags }) => {
         ) : (
           <BookingArea>
             <Booking color={color}>
-              <p>예약이 필요 없는 전시입니다</p>
+              <p>예매 할 필요 없는 전시입니다</p>
               <FileDownloadDoneSharpIcon />
             </Booking>
           </BookingArea>

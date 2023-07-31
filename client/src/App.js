@@ -3,7 +3,7 @@ import "./App.css";
 import * as React from "react";
 import { Route, Routes } from "react-router-dom";
 import MainPage from "./pages/MainPage";
-import MainHeader from "./component/header/MainHeader";
+import MainHeader from "./component/layout/MainHeader";
 import DetailPage from "./pages/DetailPage";
 
 //검색과 지도 선택에 사용될 useState

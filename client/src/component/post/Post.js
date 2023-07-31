@@ -7,8 +7,8 @@ import { Button } from "@mui/material";
 import GlobalStyle from "../../lib/styles/fontStyle";
 
 const PostBlock = styled.div`
-  padding: 5px 5px 19px 5px;
-  width: 95%;
+  padding: 5px 4px 19px 4px;
+  width: 100%;
   margin: 0 auto;
 `;
 
@@ -149,7 +149,7 @@ const Post = ({ show, color, tags }) => {
               </ContextBox>
 
               <ImageBlock>
-                <img src={imgSrc} alt="" loading="lazy" />
+                <img src={imgSrc} alt="" />
               </ImageBlock>
             </HoverEffect>
           </ContextBoxes>

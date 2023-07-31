@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { era, genre, takePhoto, artMovement, orient, free } from "./Tags";
 import TagsCheckBox from "./TagsCheckBox";
-import HorizontalLine from "../common/HorizontalLine";
+import HorizontalLine from "../layout/HorizontalLine";
 import IdToShow from "./IdToShow";
 import PostTemplate from "../post/PostTemplate";
 
