@@ -7,7 +7,13 @@ const port = process.env.PORT || 5100;
 const qs = require("querystring");
 const cors = require("cors");
 
-app.use(cors());
+const corsOptions = {
+  origin: "https://exhi-lover.com",
+  // origin: ["https://exhi-lover.com", "https://backend.exhi-lover.com"],
+  // You can add more allowed origins if needed, like: ['https://example1.com', 'https://example2.com']
+};
+
+app.use(cors(corsOptions));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -145,9 +151,8 @@ app.get("/api/tags/:tagId", (req, res) => {
 });
 
 //갤러리 id로 갤러리 찾기
-app.get("/api/gallery/:galleryId", (req, res) => {
+app.get("/api/gallery/information", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
-  const galleryId = req.params.galleryId;
   const query = `SELECT * FROM exhilove_exhilove.galleries WHERE id LIKE ?`;
   connection.query(query, [galleryId], (err, rows, fields) => {
     if (err) {
@@ -158,6 +163,35 @@ app.get("/api/gallery/:galleryId", (req, res) => {
     }
   });
 });
+
+app.get("/api/gallery/location", (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  const query = `SELECT id, gallery_name, gallery_add_tude FROM exhilove_exhilove.galleries;`;
+  connection.query(query, (err, rows, fields) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send("Error fetching shows");
+    } else {
+      res.send(rows);
+    }
+  });
+});
+
+app.get("/api/gallery/shows/:id", (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  const galleryId = req.params.id;
+  const query =
+    "SELECT id, show_name, gallery FROM exhilove_exhilove.shows WHERE on_display=1 AND gallery=?";
+  connection.query(query, [galleryId], (err, rows, fields) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send("Error fetching shows");
+    } else {
+      res.send(rows);
+    }
+  });
+});
+
 
 // Serve static assets
 app.use(express.static(path.join(__dirname, "../public_html")));

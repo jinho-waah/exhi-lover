@@ -15,7 +15,7 @@ const PostBlock = styled.div`
 const ContextBoxes = styled.div`
   margin: 0;
   width: 100%;
-  max-width: 45rem;
+  max-width: 720px;
 `;
 
 const HoverEffect = styled.div`
@@ -42,7 +42,7 @@ const HoverEffect = styled.div`
 `;
 
 const ContextBox = styled.div`
-  padding: 0.001rem 0 8px 15px;
+  padding: 1px 0 8px 15px;
   flex: 1 0 auto;
 `;
 
@@ -79,9 +79,11 @@ const PostContent = styled.div`
 
 const ImageBlock = styled.div`
   width: 100%;
-  height: 0;
-  padding-bottom: 56.25%; /* maintain 16:9 aspect ratio */
+  // height: 0;
+  // padding-bottom: 56.25%; /* maintain 16:9 aspect ratio */
+  aspect-ratio: 16/9;
   position: relative;
+  bottom: 0px;
   overflow: hidden;
   img {
     position: absolute;

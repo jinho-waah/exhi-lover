@@ -66,9 +66,6 @@ function HashTag() {
   ]);
 
   const { shows, tags } = IdToShow({ TagItems: selectedItems });
-  // useEffect(() => {
-  //   console.log(tags);
-  // });
   return (
     <>
       <Box>

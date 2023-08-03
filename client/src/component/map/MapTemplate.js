@@ -1,26 +1,32 @@
-import Map from "./Map";
+import KakaoMap from "./KakaoMap";
 import React from "react";
 import styled from "styled-components";
 import { useMemo } from "react";
 import { useEffect, useState } from "react";
 
 const MapBox = styled.div`
-  height: 120vw;
   width: 100%;
   align-items: center;
   margin: 0 auto;
+
+  @media (max-width: 560px) {
+    height: 100vw;
+  }
+
+  @media (min-width: 561px) {
+    height: 560px;
+  }
 `;
 
 const MapTemplate = () => {
-  const [location, setLocation] = useState("");
-  const [map, setMap] = useState();
+  // const [location, setLocation] = useState("");
+  // const [map, setMap] = useState();
 
-  // 현재위치 세부조정
-  var options = {
-    enableHighAccuracy: true,
-    timeout: 5000,
-    maximumAge: 0,
-  };
+  // var options = {
+  //   enableHighAccuracy: true,
+  //   timeout: 5000,
+  //   maximumAge: 0,
+  // };
 
   const [state, setState] = useState({
     center: {
@@ -73,12 +79,7 @@ const MapTemplate = () => {
 
   return (
     <MapBox>
-      {/* {state.isLoading ? (
-        <Map state={state.center} flag={flag} />
-      ) : (
-        <Map state={state.center} flag={flag} />
-      )} */}
-      <Map state={state.center} flag={flag} />
+      <KakaoMap state={state.center} flag={flag} />
     </MapBox>
   );
 };

@@ -1,6 +1,6 @@
 import axios from "axios";
 const mainUrl = "http://localhost:5100";
-// const mainUrl = "https://backend.exhi-lover.com";
+// const mainUrl = "https://exhi-lover.com";
 
 // default () => shows
 export const fetchAllShows = async () => {
@@ -62,8 +62,21 @@ export const fetchShowByShowId = async (showIds) => {
 
 //DetailViewer.js () => gallery
 export const fetchGalleryInfo = async (gallery) => {
-  const url = `/api/gallery/${gallery}`;
+  const url = `/api/gallery/information/${gallery}`;
   const response = await axios.get(`${mainUrl}${url}`);
-
   return response.data[0];
 };
+
+//Map.js > galleries table get 
+export const fetchGalleryLocation = async () => {
+  const url = "/api/gallery/location";
+  const response = await axios.get(`${mainUrl}${url}`);
+  return response.data;
+}
+
+//Map.js
+export const fetchShowsByGalleryId = async (id) => {
+  const url = `/api/gallery/shows/${id}`;
+  const response = await axios.get(`${mainUrl}${url}`);
+  return response.data;
+}
