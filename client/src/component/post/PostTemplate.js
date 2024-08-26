@@ -1,8 +1,9 @@
+import * as React from "react";
 import styled from "styled-components";
 import Post from "./Post";
 import colorSet from "../../lib/styles/colorSet";
 import { useEffect, useState, memo } from "react";
-import axios from "axios";
+import { Pagination } from "@mui/material";
 import { fetchShowTagsId, fetchTagName } from "../../lib/api/Api";
 
 const TemplateBlock = styled.div`
@@ -10,25 +11,58 @@ const TemplateBlock = styled.div`
   box-sizing: border-box;
   align-items: center;
   flex-flow: row wrap;
+  justify-content: center; /* Center content horizontally */
 `;
 
-const PostTemplate = ({ shows }) => {
+const PaginationBlock = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 3px;
+`;
+
+const StyledPagination = styled(Pagination)`
+  && {
+    .MuiPaginationItem-root {
+      color: white; // Change text color
+      border-color: white; // Change border color
+      &.Mui-selected {
+        background-color: #333; // Change background color for selected page
+      }
+      &:hover {
+        background-color: #555; // Change background color on hover
+      }
+    }
+  }
+`;
+
+const PostTemplate = ({
+  shows,
+  paginationValue,
+  setPaginationValue,
+  pageCount,
+}) => {
   const [tags, setTags] = useState(null);
   const [tagsId, setTagsId] = useState(null);
   const [error, setError] = useState(null);
+
+  const handleChange = (event, newPage) => {
+    setPaginationValue(newPage); // Update the paginationValue state with the new page number
+  };
+  const handleScroll = () => {
+    console.log("hi");
+  };
 
   useEffect(() => {
     const fetchTagsId = async () => {
       try {
         setError(null);
-
         const tagsIdData = await Promise.all(
           shows.map(async (show) => {
             const data = await fetchShowTagsId(show.id);
             return data;
           })
         );
-
         if (tagsIdData.length > 0) {
           const tagsIdArray = tagsIdData.reduce((acc, innerArray) => {
             innerArray.forEach((row) => {
@@ -62,13 +96,14 @@ const PostTemplate = ({ shows }) => {
           tagsId.map(async ({ exhibition_id, tags }) => {
             const tagNames = await Promise.all(
               tags.map(async (tagId) => {
-                const name = await fetchTagName(tagId);
-                return name;
+                const data = await fetchTagName(tagId);
+                return data;
               })
             );
             return { exhibition_id, tagNames };
           })
         );
+
         setTags(
           tagData.reduce((acc, { exhibition_id, tagNames }) => {
             acc[exhibition_id] = tagNames;
@@ -96,6 +131,13 @@ const PostTemplate = ({ shows }) => {
             <Post show={show} key={key} color={color} tags={tags?.[show.id]} />
           ); // pass color as prop to Post component
         })}
+        <PaginationBlock>
+          <StyledPagination
+            count={pageCount}
+            page={paginationValue}
+            onChange={handleChange}
+          />
+        </PaginationBlock>
       </TemplateBlock>
     </>
   );

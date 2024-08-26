@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Box from "@mui/material/Box";
@@ -6,6 +6,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Search from "../search/Search";
 import MapTemplate from "../map/MapTemplate";
 import HashTagTemplate from "../hashtag/HashTagTemplate";
+import Footer from "../layout/Footer";
 
 const theme = createTheme({
   palette: {
@@ -17,7 +18,15 @@ const theme = createTheme({
 });
 
 function MainButton() {
-  const [stat, changeStat] = useState(0);
+  // const [stat, changeStat] = useState(0);
+  const [stat, changeStat] = useState(() => {
+    const storedStat = localStorage.getItem("stat");
+    return storedStat !== null ? parseInt(storedStat) : 0;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("stat", stat);
+  }, [stat]);
 
   const activateTextField = () => {
     changeStat(0);
@@ -36,6 +45,7 @@ function MainButton() {
           backgroundColor: "#000000",
           flexDirection: "column",
           alignItems: "center",
+          justifyContent: "center",
           "& > *": {
             m: 3,
           },
@@ -48,25 +58,19 @@ function MainButton() {
             aria-label="text button group"
             color="white"
             sx={{
-              paddingRight: "25px",
-              paddingTop: "2.5rem",
+              // paddingRight: "25px",
+              paddingTop: "40px",
             }}
           >
-            <Button sx={{ width: "90px" }} onClick={activateTextField}>
-              Search
-            </Button>
-            <Button sx={{ width: "90px" }} onClick={activateHashTag}>
-              HashTag
-            </Button>
-            <Button sx={{ width: "55px" }} onClick={activateMap}>
-              Map
-            </Button>
+            <Button onClick={activateTextField}>Search</Button>
+            <Button onClick={activateHashTag}>Map</Button>
+            <Button onClick={activateMap}>HashTag</Button>
           </ButtonGroup>
         </ThemeProvider>
       </Box>
       <div>{stat === 0 && <Search />}</div>
-      <div>{stat === 1 && <HashTagTemplate />}</div>
-      <div>{stat === 2 && <MapTemplate />} </div>
+      <div>{stat === 1 && <MapTemplate />} </div>
+      <div>{stat === 2 && <HashTagTemplate />}</div>
     </div>
   );
 }

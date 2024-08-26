@@ -5,6 +5,7 @@ import { Route, Routes } from "react-router-dom";
 import MainPage from "./pages/MainPage";
 import MainHeader from "./component/layout/MainHeader";
 import DetailPage from "./pages/DetailPage";
+import HashTagTemplate from "./component/hashtag/HashTagTemplate";
 
 //검색과 지도 선택에 사용될 useState
 

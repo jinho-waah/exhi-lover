@@ -15,6 +15,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import MyCalendar from "../calendar/MyCalendar";
 import { fetchGalleryInfo } from "../../lib/api/Api";
 import Instagram from "@mui/icons-material/Instagram";
@@ -202,32 +203,35 @@ const Artist = styled.div`
   line-height: 1.4;
   p {
     font-size: 1.5rem;
-    margin: 0 0 0.3rem 0;
+    margin: 0 0 5px 0;
     font-family: "Happiness-Sans-Title";
     svg {
       transform: translateY(5px);
       font-size: 1.6rem;
-      margin-right: 0.3rem;
+      margin-right: 5px;
     }
   }
 `;
 const PlaceInfo = styled.div`
-  padding-left: 0.8rem;
-  padding-right: 0.8rem;
-  padding-bottom: 1rem;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 5px;
   color: white;
   font-family: "Happiness-Sans-Bold";
   font-size: 1rem;
   line-height: 1.4;
   p {
     font-size: 1.5rem;
-    margin: 0 0 0.3rem 0;
+    margin: 0 0 5px 0;
     font-family: "Happiness-Sans-Title";
     svg {
       transform: translateY(5px);
       font-size: 1.6rem;
-      margin-right: 0.3rem;
+      margin-right: 5px;
     }
+  }
+  #detail {
+    margin: 0 0 0 5px;
   }
 `;
 
@@ -244,12 +248,12 @@ const OpeningTime = styled.div`
   line-height: 1.4;
   p {
     font-size: 1.5rem;
-    margin: 0 0 0.3rem 0;
+    margin: 0 0 5px 0;
     font-family: "Happiness-Sans-Title";
     svg {
       transform: translateY(5px);
       font-size: 1.6rem;
-      margin-right: 0.3rem;
+      margin-right: 5px;
     }
   }
   h4 {
@@ -274,9 +278,9 @@ const Tags = styled.div`
     display: inline;
     margin-right: 6px;
     font-size: 0.97rem;
-    &: hover {
-      color: gray;
-    }
+    // &: hover {
+    //   color: gray;
+    // }
   }
 `;
 
@@ -289,21 +293,21 @@ const GalleryInformation = styled.div`
   line-height: 1.4;
   p {
     font-size: 1.5rem;
-    margin: 0 0 0.3rem 0;
+    margin: 0 0 5px 0;
     font-family: "Happiness-Sans-Title";
     svg {
       transform: translateY(5px);
       font-size: 1.6rem;
-      margin-right: 0.3rem;
+      margin-right: 5px;
     }
   }
   h3 {
-    margin: 0.3rem 0 0.2rem 0;
+    margin: 5px 0 0.2rem 0;
   }
 `;
 
 const PhoneNum = styled.div`
-  padding-left: 0.9rem;
+  padding-left: 14px;
   padding-right: 0.8rem;
   color: white;
   font-family: "Happiness-Sans-Bold";
@@ -311,16 +315,16 @@ const PhoneNum = styled.div`
   line-height: 1.4;
   p {
     font-size: 1.5rem;
-    margin: 0 0 0.3rem 0;
+    margin: 0 0 5px 0;
     font-family: "Happiness-Sans-Title";
     svg {
       transform: translateY(5px);
       font-size: 1.6rem;
-      margin-right: 0.3rem;
+      margin-right: 5px;
     }
   }
   h3 {
-    margin: 0.3rem 0 0.2rem 0;
+    margin: 5px 0 0.2rem 0;
   }
 `;
 
@@ -336,7 +340,8 @@ const DetailViewer = ({ show, color, tags }) => {
     show_name,
     show_artist,
     show_search,
-    show_term,
+    show_term_start,
+    show_term_end,
     show_city,
     gallery,
     show_place,
@@ -348,7 +353,6 @@ const DetailViewer = ({ show, color, tags }) => {
     show_brief,
     instagram_search,
   } = show[0];
-
   useEffect(() => {
     const fetchGalleries = async () => {
       try {
@@ -392,7 +396,7 @@ const DetailViewer = ({ show, color, tags }) => {
 
   const images = [];
   for (let i = 1; i < show_imgs + 1; i++) {
-    const imgSrc = `/upload/shows/${show_place_eng}/${id}/${i}.png`;
+    const imgSrc = `/upload/shows/${show_place_eng}/${id}/${i}.webp`;
     images.push(imgSrc);
   }
   const settings = {
@@ -412,6 +416,7 @@ const DetailViewer = ({ show, color, tags }) => {
       alert("url 복사 실패 했습니다");
     }
   };
+
   return (
     <>
       <GlobalStyle />
@@ -441,7 +446,12 @@ const DetailViewer = ({ show, color, tags }) => {
                 return <div key={index}>#{tag}</div>;
               })}
         </Tags>
-        <Term>{show_term}</Term>
+        {(show_term_start || show_term_end) && (
+          <Term>
+            {show_term_start} ~ {show_term_end}
+          </Term>
+        )}
+
         <HorizontalLine />
 
         <div
@@ -456,16 +466,19 @@ const DetailViewer = ({ show, color, tags }) => {
             </Sharing>
           </SharingArea>
         </div>
-        <Link
-          to={`https://www.instagram.com/explore/tags/${instagram_search}/`}
-          target="_blank"
-        >
-          <InstagramSearchArea>
-            <InstagramSearch color={color}>
-              <p>인스타그램</p> <Instagram />
-            </InstagramSearch>
-          </InstagramSearchArea>
-        </Link>
+        {instagram_search && (
+          <Link
+            to={`https://www.instagram.com/explore/tags/${instagram_search}/`}
+            target="_blank"
+          >
+            <InstagramSearchArea>
+              <InstagramSearch color={color}>
+                <p>인스타그램</p> <Instagram />
+              </InstagramSearch>
+            </InstagramSearchArea>
+          </Link>
+        )}
+
         {show_link ? (
           <Link to={show_link} target="_blank">
             <BookingArea>
@@ -485,23 +498,29 @@ const DetailViewer = ({ show, color, tags }) => {
             </Booking>
           </BookingArea>
         )}
-        <ShowPrice></ShowPrice>
+        <ShowPrice />
+
         <HorizontalLine />
         <InfoBlock>
-          <Artist>
-            <p>
-              <Person2SharpIcon />
-              참여 작가
-            </p>
-            {show_artist}
-          </Artist>
-          <HorizontalLine />
+          {show_artist && (
+            <>
+              <Artist>
+                <p>
+                  <Person2SharpIcon />
+                  참여 작가
+                </p>
+                {show_artist}
+              </Artist>
+              <HorizontalLine />
+            </>
+          )}
           <OpeningTime>
             <p>
-              <CalendarMonthIcon /> {show_term}
-            </p>{" "}
+              <CalendarMonthIcon />
+              {show_term_start} ~ {show_term_end}
+            </p>
             <h4>휴무일: {business_week}</h4>
-            <MyCalendar date={show_term} />
+            <MyCalendar startDate={show_term_start} endDate={show_term_end} />
           </OpeningTime>
 
           <HorizontalLine />
@@ -524,7 +543,7 @@ const DetailViewer = ({ show, color, tags }) => {
           <HorizontalLine />
           <PhoneNum>
             <p>
-              <PhoneIcon />{" "}
+              <PhoneIcon />
               <a href={`tel:${gallery_phone_num}`} onClick={handlePhoneCall}>
                 {gallery_phone_num}
               </a>
@@ -538,9 +557,11 @@ const DetailViewer = ({ show, color, tags }) => {
                 {show_place}
               </Link>
             </p>
-            {gallery_add_word}
-            <br />
-            {show_place_detail ? show_place_detail : "상세 장소가 없습니다."}
+            <div id="detail">
+              {gallery_add_word}
+              <br />
+              {show_place_detail ? show_place_detail : "상세 장소가 없습니다."}
+            </div>
             <PlaceMap>
               {latitude && longitude && (
                 <MiniMap name={show_place} lat={latitude} lng={longitude} />

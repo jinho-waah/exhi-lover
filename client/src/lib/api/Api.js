@@ -4,14 +4,20 @@ const mainUrl = "http://localhost:5100";
 
 // default () => shows
 export const fetchAllShows = async () => {
-  const url = "/api/shows";
+  const url = "/api/show";
   const response = await axios.get(`${mainUrl}${url}`);
   return response.data;
 };
 
 // search.js (searchQuery) => shows
-export const fetchShowsbySearchQuery = async (searchQuery) => {
-  const url = searchQuery ? `/api/shows/search/${searchQuery}` : "/api/shows";
+export const fetchShowsbySearchQuery = async (
+  searchQuery,
+  selectedValue,
+  paginationValue
+) => {
+  const url = searchQuery
+    ? `/api/shows/search/${paginationValue}/${searchQuery}/${selectedValue}`
+    : `/api/show/${paginationValue}/${selectedValue}`;
   const response = await axios.get(`${mainUrl}${url}`);
   return response.data;
 };
@@ -67,12 +73,14 @@ export const fetchGalleryInfo = async (gallery) => {
   return response.data[0];
 };
 
-//Map.js > galleries table get 
+//Map.js > galleries table get
 export const fetchGalleryLocation = async () => {
-  const url = "/api/gallery/location";
+  const timestamp = Date.now();
+  // const url = "/api/gallery/location";
+  const url = `/api/gallery/location?timestamp=${timestamp}`;
   const response = await axios.get(`${mainUrl}${url}`);
   return response.data;
-}
+};
 
 //Map.js
 export const fetchShowsByGalleryId = async (id) => {

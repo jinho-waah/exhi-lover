@@ -1,24 +1,25 @@
 /*global kakao*/
-import React, { useEffect, useState } from "react";
-import { Map, MapMarker, StaticMap } from "react-kakao-maps-sdk";
+import React, { useEffect, useRef } from "react";
 
 function MiniMap({ name, lat, lng }) {
-  return (
-    <StaticMap
-      center={{ lat: lat, lng: lng }}
-      style={{ width: "100%", height: "21rem" }}
-      level={4}
-      marker={[
-        {
-          position: {
-            lat: lat,
-            lng: lng,
-          },
-          text: name, // text 옵션을 설정하면 마커 위에 텍스트를 함께 표시할 수 있습니다
-        },
-      ]}
-    ></StaticMap>
-  );
+  useEffect(() => {
+    const mapContainer = document.getElementById("map");
+    const mapOptions = {
+      center: new window.kakao.maps.LatLng(lat, lng),
+      level: 3,
+    };
+
+    const map = new window.kakao.maps.Map(mapContainer, mapOptions);
+
+    const markerPosition = new window.kakao.maps.LatLng(lat, lng);
+    const marker = new window.kakao.maps.Marker({
+      position: markerPosition,
+    });
+
+    marker.setMap(map);
+  }, [lat, lng, name]);
+
+  return <div id="map" style={{ width: "100%", height: "350px" }}></div>;
 }
 
 export default React.memo(MiniMap);

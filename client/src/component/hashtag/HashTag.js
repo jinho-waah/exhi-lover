@@ -1,7 +1,15 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import { era, genre, takePhoto, artMovement, orient, free } from "./Tags";
+import {
+  era,
+  genre,
+  takePhoto,
+  artMovement,
+  orient,
+  free,
+  permanent,
+} from "./Tags";
 import TagsCheckBox from "./TagsCheckBox";
 import HorizontalLine from "../layout/HorizontalLine";
 import IdToShow from "./IdToShow";
@@ -10,22 +18,28 @@ import PostTemplate from "../post/PostTemplate";
 const Box = styled.div`
   algin-item: left;
   width: 100%;
-  padding: 0.4rem 0 0 1.1rem;
   margin: 0 auto;
-  padding: 5px 5px 30px 5px;
+  padding: 5px 5px 0px 5px;
 `;
 
-function HashTag() {
+function HashTag({ selectedHashtag }) {
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectedPhoto, setSelectedPhoto] = useState([]);
+  const [selectedPermanent, setSelectedPermanent] = useState([]);
   const [selectedOrient, setSelectedOrient] = useState([]);
   const [selectedGenre, setSelectedGenre] = useState([]);
   const [selectedEra, setSelectedEra] = useState([]);
   const [selectedArtMovement, setSelectedArtMovement] = useState([]);
   const [selectedFree, setSelectedFree] = useState([]);
 
+  const handleCheckedFree = (items) => {
+    setSelectedFree(items);
+  };
   const handleCheckedPhoto = (items) => {
     setSelectedPhoto(items);
+  };
+  const handleCheckpermanent = (items) => {
+    setSelectedPermanent(items);
   };
   const handleCheckedOrient = (items) => {
     setSelectedOrient(items);
@@ -39,9 +53,6 @@ function HashTag() {
   const handleCheckedArtMovement = (items) => {
     setSelectedArtMovement(items);
   };
-  const handleCheckedFree = (items) => {
-    setSelectedFree(items);
-  };
 
   useEffect(() => {
     setSelectedItems((prevSelectedItems) => {
@@ -52,6 +63,7 @@ function HashTag() {
         ...selectedEra,
         ...selectedArtMovement,
         ...selectedFree,
+        ...selectedPermanent,
       ];
       const orderedItmes = items.sort((a, b) => a - b);
       return orderedItmes;
@@ -63,6 +75,7 @@ function HashTag() {
     selectedEra,
     selectedArtMovement,
     selectedFree,
+    selectedPermanent,
   ]);
 
   const { shows, tags } = IdToShow({ TagItems: selectedItems });
@@ -83,7 +96,13 @@ function HashTag() {
           handleCheckedItems={handleCheckedPhoto}
           tags={tags}
         />
-
+        <HorizontalLine />
+        <TagsCheckBox
+          title={"상설 전시회"}
+          items={permanent}
+          handleCheckedItems={handleCheckpermanent}
+          tags={tags}
+        />
         <HorizontalLine />
         <TagsCheckBox
           title={"지역별"}

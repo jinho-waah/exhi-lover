@@ -1,13 +1,12 @@
 import * as React from "react";
 import styled from "styled-components";
 import palette from "../../lib/styles/palette";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Button } from "@mui/material";
 import GlobalStyle from "../../lib/styles/fontStyle";
 
 const PostBlock = styled.div`
-  padding: 5px 4px 19px 4px;
+  padding: 5px 14px 13px 14px;
   width: 100%;
   margin: 0 auto;
 `;
@@ -19,7 +18,9 @@ const ContextBoxes = styled.div`
 `;
 
 const HoverEffect = styled.div`
-  background: #1b1b1b;
+  background: #191919;
+  // background: #000000;
+  // border: 1px solid #6a6a6a;
   &:hover {
   background: ${(props) => props.color || "#ec6c03"};
   h1,
@@ -102,7 +103,8 @@ const Post = ({ show, color, tags }) => {
     show_name,
     show_artist,
     show_search,
-    show_term,
+    show_term_start,
+    show_term_end,
     show_city,
     gallery,
     show_place,
@@ -113,11 +115,29 @@ const Post = ({ show, color, tags }) => {
     show_imgs,
     show_brief,
   } = show;
-  const imgSrc = "/upload/shows/" + show_place_eng + "/" + id + "/1.png";
+  const imgSrc = "/upload/shows/" + show_place_eng + "/" + id + "/1.webp";
+  const [imageExists, setImageExists] = useState(true);
+
+  useEffect(() => {
+    // Check if the image exists
+    const img = new Image();
+    img.src = imgSrc;
+    img.onload = () => {
+      setImageExists(true);
+    };
+    img.onerror = () => {
+      setImageExists(false);
+    };
+  }, [imgSrc]);
 
   const handleClickOpen = () => {
     navigate(`/shows/${id}`, { state: { color } });
   };
+
+  if (!imageExists) {
+    return null; // Don't render the component if the image doesn't exist
+  }
+
   return (
     <>
       <GlobalStyle />
@@ -134,8 +154,13 @@ const Post = ({ show, color, tags }) => {
                   </h2>
                 </PostTitle>
                 <PostContent>
-                  <h4>{show_term}</h4>
-                  {tags &&
+                  {(show_term_start || show_term_end) && (
+                    <h4>
+                      {show_term_start} ~ {show_term_end}
+                    </h4>
+                  )}
+
+                  {tags ? (
                     tags
                       .sort((a, b) =>
                         a.includes("사진촬영 가능")
@@ -146,10 +171,12 @@ const Post = ({ show, color, tags }) => {
                       )
                       .map((tag, index) => {
                         return <h5 key={index}>#{tag}</h5>;
-                      })}
+                      })
+                  ) : (
+                    <h5>loading...</h5>
+                  )}
                 </PostContent>
               </ContextBox>
-
               <ImageBlock>
                 <img src={imgSrc} alt="" />
               </ImageBlock>

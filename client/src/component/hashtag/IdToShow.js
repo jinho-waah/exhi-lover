@@ -7,7 +7,7 @@ import {
   fetchTagsIdbyShowId,
 } from "../../lib/api/Api";
 
-function IdToShow({ TagItems }) {
+function IdToShow({ TagItems, selectedValue }) {
   const [shows, setShows] = useState(null);
   const [tags, setTags] = useState(null);
   const [error, setError] = useState(null);

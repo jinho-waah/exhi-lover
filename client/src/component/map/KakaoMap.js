@@ -1,87 +1,160 @@
 /*global kakao*/
-import React, { useEffect, useState } from "react";
-import Marker from "./Marker";
-import { Map, MapMarker, CustomOverlayMap } from "react-kakao-maps-sdk";
-import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
-import icon from "../../lib/icon/loc7.png";
+import React, { useEffect, useRef, useState } from "react";
+import icon from "../../lib/icon/loc.png";
+import iconDark from "../../lib/icon/dot.png";
+import SwipeableEdgeDrawer from "./SwipeableEdgeDrawer";
+import FetchShowTags from "./FetchShowTags";
 
-function KakaoMap({ state, flag }) {
-  const mapHeight = window.innerWidth >= 560 ? 560 : window.innerWidth;
-  const center = state;
-  const test = Marker();
-  console.log(typeof test, test);
-  const positions = [
-    {
-      title: "카카오",
-      latlng: { lat: 33.450705, lng: 126.570677 },
-    },
-    {
-      title: "생태연못",
-      latlng: { lat: 33.450936, lng: 126.569477 },
-    },
-    {
-      title: "텃밭",
-      latlng: { lat: 33.450879, lng: 126.56994 },
-    },
-    {
-      title: "근린공원",
-      latlng: { lat: 33.451393, lng: 126.570738 },
-    },
-  ];
-  // useEffect(() => {
-  //   setCenter(state);
-  // }, [state]);
-  // const [center, setCenter] = useState({ lat: 36.5, lng: 127.8 });
-  // setCenter(new kakao.maps.LatLng(state.lat, state.lng));
-  // useEffect(() => {
-  //   // setCenter(new kakao.maps.LatLng(state.lat, state.lng));
+function KakaoMap({ lat, lng, showMarker, galleriesMarker }) {
+  const mapHeight = (window.innerWidth >= 560 ? 560 : window.innerWidth) * 1.1;
+  const mapContainer = useRef(null);
 
-  //   var container = document.getElementById("map");
-  //   var options = {
-  //     center: new kakao.maps.LatLng(state.lat, state.lng),
-  //     level: 3,
-  //   };
+  const [selectedMarker, setSelectedMarker] = useState(null);
+  const [drawerOpen, setDrawerOpen] = useState(false); // Add a state variable for drawer visibility
+  const [lastestClickedMarker, setLastestClickedMarker] = useState(null);
 
-  //   var map = new kakao.maps.Map(container, options);
-  //   var markerPosition = new kakao.maps.LatLng(state.lat, state.lng);
+  const imageSize = new window.kakao.maps.Size(35, 35);
+  const darkImageSize = new window.kakao.maps.Size(16, 16);
+  const galleryMarkerImage = new window.kakao.maps.MarkerImage(icon, imageSize);
+  const galleryMarkerImageDark = new window.kakao.maps.MarkerImage(
+    iconDark,
+    darkImageSize
+  );
 
-  //   if (flag === true) {
-  //     var marker = new kakao.maps.Marker({
-  //       position: markerPosition,
-  //     });
-  //     marker.setMap(map);
-  //   }
-  // }, [state, flag]);
+  const mapOptions = {
+    center: new window.kakao.maps.LatLng(lat, lng),
+    level: 6,
+  };
+
+  useEffect(() => {
+    const map = new window.kakao.maps.Map(mapContainer.current, mapOptions);
+
+    const storedLastClickedMarker = localStorage.getItem("lastClickedMarker");
+    const initialLastClickedMarker = storedLastClickedMarker
+      ? JSON.parse(storedLastClickedMarker)
+      : null;
+
+    setLastestClickedMarker(
+      initialLastClickedMarker
+        ? new window.kakao.maps.LatLng(
+            initialLastClickedMarker.lat,
+            initialLastClickedMarker.lng
+          )
+        : null
+    );
+
+    if (showMarker) {
+      const markerPosition = new window.kakao.maps.LatLng(lat, lng);
+      const marker = new window.kakao.maps.Marker({
+        map: map,
+        position: markerPosition,
+      });
+    }
+
+    if (lastestClickedMarker) {
+      map.panTo(lastestClickedMarker);
+    }
+
+    galleriesMarker.forEach((galleryMarker) => {
+      if (galleryMarker.onDisplay) {
+        const setGalleryMarker = new window.kakao.maps.Marker({
+          map: map,
+          position: new window.kakao.maps.LatLng(
+            galleryMarker.latlng.lat,
+            galleryMarker.latlng.lng
+          ),
+          image: galleryMarkerImage,
+          zIndex: 99,
+        });
+
+        window.kakao.maps.event.addListener(
+          setGalleryMarker,
+          "click",
+          function () {
+            map.panTo(setGalleryMarker.getPosition());
+            window.scrollTo({
+              top: document.body.scrollHeight,
+              behavior: "smooth", // Optional: This provides a smooth scroll animation
+            });
+            setSelectedMarker(galleryMarker);
+            setLastestClickedMarker(setGalleryMarker.getPosition());
+            localStorage.setItem(
+              "lastClickedMarker",
+              JSON.stringify({
+                lat: setGalleryMarker.getPosition().getLat(),
+                lng: setGalleryMarker.getPosition().getLng(),
+              })
+            );
+            setDrawerOpen(true);
+          }
+        );
+      } else {
+        const setGalleryMarker = new window.kakao.maps.Marker({
+          map: map,
+          position: new window.kakao.maps.LatLng(
+            galleryMarker.latlng.lat,
+            galleryMarker.latlng.lng
+          ),
+          image: galleryMarkerImageDark,
+        });
+
+        window.kakao.maps.event.addListener(
+          setGalleryMarker,
+          "click",
+          function () {
+            map.panTo(setGalleryMarker.getPosition());
+            window.scrollTo({
+              top: document.body.scrollHeight,
+              behavior: "smooth",
+            });
+            setSelectedMarker(galleryMarker);
+            setLastestClickedMarker(setGalleryMarker.getPosition());
+            localStorage.setItem(
+              "lastClickedMarker",
+              JSON.stringify({
+                lat: setGalleryMarker.getPosition().getLat(),
+                lng: setGalleryMarker.getPosition().getLng(),
+              })
+            );
+            setDrawerOpen(true);
+          }
+        );
+      }
+    });
+  }, [showMarker, galleriesMarker]);
 
   return (
     <div>
-      <Map // 지도를 표시할 Container
-        center={center}
+      <div
         style={{
-          // 지도의 크기
-          width: "100%",
-          height: `${mapHeight}px`,
+          width: `100%`,
+          maxWidth: "560px",
+          height: `${mapHeight + 50}px`,
+          position: "absolute",
         }}
-        level={3} // 지도의 확대 레벨
       >
-        {flag && <MapMarker position={center} />}
-        {test.map((position, index) => (
-          <MapMarker
-            key={`${position.title}-${position.latlng}`}
-            position={position.latlng} // 마커를 표시할 위치
-            image={{
-              src: icon,
-              size: {
-                width: 33,
-                height: 33,
-              }, // 마커이미지의 크기입니다
+        <div
+          id="map"
+          ref={mapContainer}
+          style={{
+            width: `auto`,
+            height: `${mapHeight + 50}px`,
+            // position: "absolute",
+          }}
+        />
+        {selectedMarker && drawerOpen ? (
+          <SwipeableEdgeDrawer
+            gallery={selectedMarker}
+            onClose={() => {
+              setDrawerOpen(false);
             }}
-            title={position.title} // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
           />
-        ))}
-      </Map>
+        ) : (
+          <SwipeableEdgeDrawer />
+        )}
+      </div>
     </div>
   );
 }
 
-export default React.memo(KakaoMap);
+export default KakaoMap;

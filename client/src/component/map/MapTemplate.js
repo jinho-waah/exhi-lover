@@ -1,33 +1,26 @@
-import KakaoMap from "./KakaoMap";
 import React from "react";
 import styled from "styled-components";
 import { useMemo } from "react";
 import { useEffect, useState } from "react";
+import KakaoMap from "./KaKaoMap";
+import Marker from "./Marker";
 
 const MapBox = styled.div`
   width: 100%;
   align-items: center;
-  margin: 0 auto;
+  margin: 0;
 
   @media (max-width: 560px) {
-    height: 100vw;
+    height: calc(110vw + 50px);
   }
 
   @media (min-width: 561px) {
-    height: 560px;
+    // height: 616px;
+    height: 666px;
   }
 `;
 
 const MapTemplate = () => {
-  // const [location, setLocation] = useState("");
-  // const [map, setMap] = useState();
-
-  // var options = {
-  //   enableHighAccuracy: true,
-  //   timeout: 5000,
-  //   maximumAge: 0,
-  // };
-
   const [state, setState] = useState({
     center: {
       lat: 37.56649,
@@ -36,6 +29,7 @@ const MapTemplate = () => {
     errMsg: null,
     isLoading: true,
   });
+  const positions = Marker();
 
   const [flag, setFlag] = useState(false); // true -> marker 활성화 (위치 활성화를 하지 않으면 no marker)
 
@@ -79,7 +73,12 @@ const MapTemplate = () => {
 
   return (
     <MapBox>
-      <KakaoMap state={state.center} flag={flag} />
+      <KakaoMap
+        lat={state.center.lat}
+        lng={state.center.lng}
+        showMarker={flag}
+        galleriesMarker={positions}
+      />
     </MapBox>
   );
 };

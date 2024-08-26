@@ -6,10 +6,10 @@ const app = express();
 const port = process.env.PORT || 5100;
 const qs = require("querystring");
 const cors = require("cors");
+const schedule = require("node-schedule");
 
 const corsOptions = {
-  origin: "https://exhi-lover.com",
-  // origin: ["https://exhi-lover.com", "https://backend.exhi-lover.com"],
+  // origin: "https://exhi-lover.com",
   // You can add more allowed origins if needed, like: ['https://example1.com', 'https://example2.com']
 };
 
@@ -31,10 +31,115 @@ const connection = mysql.createConnection({
 
 connection.connect();
 
+const task = schedule.scheduleJob("0 0 * * *", () => {
+  const currentDate = new Date().toISOString().split("T")[0]; // Get the current date in YYYY-MM-DD format
+
+  const firstQuery = `
+    UPDATE exhilove_exhilove.shows
+    SET on_display = 0
+    WHERE show_term_end < ? AND on_display = 1
+  `;
+
+  connection.query(firstQuery, [currentDate], (err, result) => {
+    if (err) {
+      console.error("Error updating data:", err);
+    } else {
+      console.log("Data updated successfully");
+    }
+  });
+
+  const secondQeury = `
+    UPDATE exhilove_exhilove.galleries g
+    SET g.ON_DISPLAY = 1
+    WHERE EXISTS (
+      SELECT 1
+      FROM exhilove_exhilove.shows s
+      WHERE s.gallery = g.id AND s.on_display = 1
+    );
+
+
+`;
+  connection.query(secondQeury, (err, result) => {
+    if (err) {
+      console.error("Error updating data:", err);
+    } else {
+      console.log("Data updated successfully");
+    }
+  });
+
+  const thirdQuery = `
+    UPDATE exhilove_exhilove.galleries g
+    SET g.ON_DISPLAY = 0
+    WHERE NOT EXISTS (
+      SELECT 1
+      FROM exhilove_exhilove.shows s
+      WHERE s.gallery = g.id AND s.on_display = 1
+    );
+  `;
+  connection.query(thirdQuery, (err, result) => {
+    if (err) {
+      console.error("Error updating data:", err);
+    } else {
+      console.log("Data updated successfully");
+    }
+  });
+});
+
+const secondTask = schedule.scheduleJob("0 6 * * *", () => {
+  const currentDate = new Date().toISOString().split("T")[0]; // Get the current date in YYYY-MM-DD format
+
+  const firstQuery = `
+    UPDATE exhilove_exhilove.shows
+    SET on_display = 0
+    WHERE show_term_end < ? AND on_display = 1
+  `;
+
+  connection.query(firstQuery, [currentDate], (err, result) => {
+    if (err) {
+      console.error("Error updating data:", err);
+    } else {
+      console.log("Data updated successfully");
+    }
+  });
+
+  const secondQeury = `
+    UPDATE exhilove_exhilove.galleries g
+    SET g.ON_DISPLAY = 1
+    WHERE EXISTS (
+      SELECT 1
+      FROM exhilove_exhilove.shows s
+      WHERE s.gallery = g.id AND s.on_display = 1
+    );`;
+  connection.query(secondQeury, (err, result) => {
+    if (err) {
+      console.error("Error updating data:", err);
+    } else {
+      console.log("Data updated successfully");
+    }
+  });
+
+  const thirdQuery = `
+    UPDATE exhilove_exhilove.galleries g
+    SET g.ON_DISPLAY = 0
+    WHERE NOT EXISTS (
+      SELECT 1
+      FROM exhilove_exhilove.shows s
+      WHERE s.gallery = g.id AND s.on_display = 1
+    );
+  `;
+  connection.query(thirdQuery, (err, result) => {
+    if (err) {
+      console.error("Error updating data:", err);
+    } else {
+      console.log("Data updated successfully");
+    }
+  });
+});
+
 // 전체 shows
-app.get("/api/shows", (req, res) => {
+app.get("/api/show", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
-  const query = "SELECT * FROM exhilove_exhilove.shows";
+  const query = `SELECT * FROM exhilove_exhilove.shows WHERE on_display = 1 `;
   connection.query(query, (err, rows, fields) => {
     if (err) {
       console.error(err);
@@ -45,20 +150,98 @@ app.get("/api/shows", (req, res) => {
   });
 });
 
-// 검색 > shows
-app.get("/api/shows/search/:searchQuery", (req, res) => {
+// 전체 shows sorting ver.
+app.get("/api/show/:paginationValue/:selectedValue", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
-  const searchQuery = req.params.searchQuery;
-  const query = `SELECT * FROM exhilove_exhilove.shows WHERE show_search LIKE ?`;
-  connection.query(query, [`%${searchQuery}%`], (err, rows, fields) => {
+  const selectedValue = parseInt(req.params.selectedValue, 10);
+  const paginationValue = parseInt(req.params.paginationValue, 10);
+  let order = "";
+
+  if (selectedValue === 1) {
+    order = "AND show_term_end IS NOT NULL ORDER BY show_term_start DESC";
+  } else if (selectedValue === 2) {
+    order = "AND show_term_end IS NOT NULL ORDER BY show_term_start";
+  } else if (selectedValue === 3) {
+    order = "AND show_term_end IS NOT NULL ORDER BY show_term_end";
+  } else if (selectedValue === 4) {
+    order = "AND show_term_end IS NULL";
+  }
+  const query =
+    `SELECT * FROM exhilove_exhilove.shows WHERE on_display = 1 ` +
+    `${order} LIMIT ${(paginationValue - 1) * 10}, 10`;
+  const pageQuery = `SELECT COUNT(*) FROM exhilove_exhilove.shows WHERE on_display = 1 `;
+
+  connection.query(query, (err, rows, fields) => {
     if (err) {
       console.error(err);
       res.status(500).send("Error fetching shows");
     } else {
-      res.send(rows);
+      connection.query(pageQuery, (pageErr, pageRows, pageFields) => {
+        if (pageErr) {
+          console.error(pageErr);
+          res.status(500).send("Error fetching page count");
+        } else {
+          const totalCount = parseInt(pageRows[0]["COUNT(*)"], 10);
+          res.send({ rows, totalCount });
+        }
+      });
     }
   });
 });
+
+// 검색 > shows
+app.get(
+  "/api/shows/search/:paginationValue/:searchQuery/:selectedValue",
+  (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    const searchQuery = req.params.searchQuery;
+    const selectedValue = parseInt(req.params.selectedValue, 10);
+    const paginationValue = parseInt(req.params.paginationValue, 10);
+
+    console.log(searchQuery);
+    let order = "";
+
+    if (selectedValue === 1) {
+      order = "AND show_term_end IS NOT NULL ORDER BY show_term_start DESC";
+    } else if (selectedValue === 2) {
+      order = "AND show_term_end IS NOT NULL ORDER BY show_term_start";
+    } else if (selectedValue === 3) {
+      order = "AND show_term_end IS NOT NULL ORDER BY show_term_end";
+    } else if (selectedValue === 4) {
+      order = "AND show_term_end IS NULL";
+    }
+
+    const query =
+      `SELECT * FROM exhilove_exhilove.shows WHERE show_search LIKE ? AND on_display = 1 ${order} ` +
+      `LIMIT ${(paginationValue - 1) * 10}, 10`;
+
+    const pageQuery =
+      `SELECT COUNT(*) FROM exhilove_exhilove.shows ` +
+      `WHERE show_search LIKE ? AND on_display = 1 `;
+
+    connection.query(query, [`%${searchQuery}%`], (err, rows, fields) => {
+      if (err) {
+        console.error(err);
+        res.status(500).send("Error fetching shows");
+      } else {
+        connection.query(
+          pageQuery,
+          [`%${searchQuery}%`],
+          (pageErr, pageRows, pageFields) => {
+            if (pageErr) {
+              console.error(pageErr);
+              res.status(500).send("Error fetching page count");
+            } else {
+              const totalCount = parseInt(pageRows[0]["COUNT(*)"], 10);
+              console.log(rows);
+              res.send({ rows, totalCount });
+            }
+          }
+        );
+      }
+    });
+  }
+);
 
 //show id로 show 불러오기
 app.get("/api/shows/id/:showsId", (req, res) => {
@@ -79,8 +262,7 @@ app.get("/api/shows/id/:showsId", (req, res) => {
 app.get("/api/exhibition_tags/show/:showId", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
   const showId = req.params.showId;
-  // const query = `SELECT * FROM exhilove_exhilove.exhibition_tags WHERE exhibition_id LIKE ?`;
-  const query = `SELECT * FROM exhilove_exhilove.exhibition_tags WHERE exhibition_id LIKE CONCAT('%', ?, '%')`;
+  const query = `SELECT * FROM exhilove_exhilove.exhibition_tags WHERE exhibition_id = ?`;
   connection.query(query, [showId], (err, rows, fields) => {
     if (err) {
       console.error(err);
@@ -151,8 +333,9 @@ app.get("/api/tags/:tagId", (req, res) => {
 });
 
 //갤러리 id로 갤러리 찾기
-app.get("/api/gallery/information", (req, res) => {
+app.get("/api/gallery/information/:galleryId", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
+  const galleryId = req.params.galleryId;
   const query = `SELECT * FROM exhilove_exhilove.galleries WHERE id LIKE ?`;
   connection.query(query, [galleryId], (err, rows, fields) => {
     if (err) {
@@ -166,7 +349,7 @@ app.get("/api/gallery/information", (req, res) => {
 
 app.get("/api/gallery/location", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
-  const query = `SELECT id, gallery_name, gallery_add_tude FROM exhilove_exhilove.galleries;`;
+  const query = `SELECT id, gallery_name, gallery_add_word, gallery_add_tude, gallery_phone_num, site, on_display FROM exhilove_exhilove.galleries;`;
   connection.query(query, (err, rows, fields) => {
     if (err) {
       console.error(err);
@@ -181,7 +364,7 @@ app.get("/api/gallery/shows/:id", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
   const galleryId = req.params.id;
   const query =
-    "SELECT id, show_name, gallery FROM exhilove_exhilove.shows WHERE on_display=1 AND gallery=?";
+    "SELECT id, show_name, show_artist, show_term_start, show_term_end, show_place_eng FROM exhilove_exhilove.shows WHERE on_display=1 AND gallery=?";
   connection.query(query, [galleryId], (err, rows, fields) => {
     if (err) {
       console.error(err);

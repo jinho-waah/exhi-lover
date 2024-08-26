@@ -3,12 +3,11 @@ import Calendar from "react-calendar";
 import "./Calendar.css";
 // import "react-calendar/dist/Calendar.css"; // css import
 
-function MyCalendar({ date }) {
-  const dateArray = date.split(" ~ ");
+function MyCalendar({ startDate, endDate }) {
   // const dateRange = [new Date(dateArray[0]), new Date(dateArray[1])];
   const [today, setToday] = useState(new Date());
-  const [startDay, setStartDay] = useState(new Date(dateArray[0]));
-  const [endDay, setEndDay] = useState(new Date(dateArray[1]));
+  const [startDay, setStartDay] = useState(new Date(startDate));
+  const [endDay, setEndDay] = useState(new Date(endDate));
   const dateRange = [startDay, endDay];
   const formatShortWeekday = (locale, date) => {
     const weekdays = ["M", "T", "W", "T", "F", "S", "S"];
@@ -22,8 +21,8 @@ function MyCalendar({ date }) {
         value={dateRange}
         onViewChange={(view) => {
           if (view === "month") {
-            setStartDay(new Date(dateArray[0]));
-            setEndDay(new Date(dateArray[1]));
+            setStartDay(new Date(startDate));
+            setEndDay(new Date(endDate));
           }
         }}
         onActiveStartDateChange={({ activeStartDate, view }) => {

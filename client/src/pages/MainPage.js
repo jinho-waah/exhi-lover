@@ -27,20 +27,20 @@ const InformBox = styled.div`
 `;
 
 const InformTitle = styled.div`
-  padding: 34px 0px 0px 20px;
+  padding: 26px 18px 0px 18px;
   font-family: "Happiness-Sans-Title", sans-serif;
-  font-size: 30px;
+  font-size: 28px;
   font: bold;
-  white-space: nowrap;
+  // white-space: nowrap;
 `;
 
 const InformContext = styled.div`
-  padding: 8px 23px 17px 23px;
+  padding: 0px 20px 10px 20px;
   font-family: "Happiness-Sans-Bold", sans-serif;
-  font-size: 18px;
+  font-size: 16px;
 `;
 
-function MainPage() {
+function MainPage({ val }) {
   const quotes = [
     "Art is not what you see, but what you make others see. - Edgar Degas",
     "Art is the lie that enables us to realize the truth. - Pablo Picasso",
@@ -109,15 +109,22 @@ function MainPage() {
       </MainImage>
       <InformBox>
         <InformTitle>Welcome to Exhi-lover</InformTitle>
+        {/* <InformTitle>Art & Love: Always Beside Us</InformTitle> */}
         <InformContext>
-          <p style={{ paddingBottom: "0" }}>{splitQuote[0]}</p>
+          {/* <p style={{ paddingBottom: "0px" }}>{splitQuote[0]}</p>
           <p
             style={{
+              paddingTop: "0px",
               textAlign: "right",
-              paddingRight: "17px",
+              paddingRight: "8px",
               fontSize: "14px",
             }}
-          >{`- ${splitQuote[1]}`}</p>
+          >{`- ${splitQuote[1]}`}</p> */}
+          <p>
+            전시회 검색을 더 편하게
+            <br />
+            나한테 맞는 전시를 찾아봐요.
+          </p>
         </InformContext>
       </InformBox>
       <MainButton />
