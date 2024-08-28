@@ -31,7 +31,7 @@ const NoneShow = styled.div`
   padding-left: 0.8rem;
   height: 400px;
   p {
-    margin 0;
+    margin: 0;
     margin-bottom: 0.4rem;
     font-size: 1.4rem;
   }

@@ -16,7 +16,7 @@ import IdToShow from "./IdToShow";
 import PostTemplate from "../post/PostTemplate";
 
 const Box = styled.div`
-  algin-item: left;
+  align-items: left;
   width: 100%;
   margin: 0 auto;
   padding: 5px 5px 0px 5px;
