@@ -1,4 +1,4 @@
-<h1 align='center'><b>Exhi-Lover</b></h1>
+<h1 align='center'><b>Exhi-Lover</b></h1>
 
 ## **1. Exhi-lover 소개**
 
