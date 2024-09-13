@@ -5,8 +5,8 @@
 ![GameBuddy Poster](https://github.com/FRONTENDSCHOOL7/final-10-GameBuddy/assets/80045006/f6156e63-9a8d-4af4-aab5-4b0ad3da53e3)
 
 > Exhi-lover는 전시회를 손쉽게 검색 할 수 있는 입니다.<br/>
-> 조진호의 solo project 입니다.
-[Exhi-Lover URL](https://exhi-lover.com)<br/>
+> 조진호의 solo project 입니다. 
+[Exhi-Lover URL](https://exhi-lover.com)<br/>
                                                                
 ## **2. 개발 환경 & 핵심 기술 설명**
 
