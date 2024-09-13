@@ -1,57 +1,13 @@
-<h1 align='center'><b>GameBuddy</b></h1>
+<h1 align='center'><b>Exhi-Lover</b></h1>
 
-## **1. GameBuddy 소개**
+## **1. Exhi-lover 소개**
 
 ![GameBuddy Poster](https://github.com/FRONTENDSCHOOL7/final-10-GameBuddy/assets/80045006/f6156e63-9a8d-4af4-aab5-4b0ad3da53e3)
 
-> Game Buddy는 실시간으로 게임 참여자를 모집하며, 다양한 유저들과 소통할 수 있는 공간입니다.<br/>
-> Game Buddy를 통해 진정한 BUDDY를 만나보세요!
-
-🎮[GameBuddy 배포 URL](https://gamebuddy.xyz/login)🎮
-
-```
-// 테스트용 계정
-Email: gamebuddytest@buddy.com
-Password: gamebuddytest
-```
-
-## **2. 팀 소개 & 역할 분담**
-
-### **팀 소개**
-
-|                                              방하진                                               |                                              박태준                                               |                                              최연정                                              |                                              박준홍                                              |
-| :-----------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------: |
-| <img width="180" alt="프로필_방하진" src="https://avatars.githubusercontent.com/u/138538168?v=4"> | <img width="180" alt="프로필_박태준" src="https://avatars.githubusercontent.com/u/126474575?v=4"> | <img width="180" alt="프로필_최연정" src="https://avatars.githubusercontent.com/u/62794884?v=4"> | <img width="180" alt="프로필_박준홍" src="https://avatars.githubusercontent.com/u/80045006?v=4"> |
-|                            [Hajin-Bang](https://github.com/Hajin-Bang)                            |                               [GedFlow](https://github.com/GedFlow)                               |                         [yeonjeonge-e](https://github.com/yeonjeonge-e)                          |                               [JJamVa](https://github.com/JJamVa)                                |
-|                                               팀원                                                |                                               팀원                                                |                                               팀원                                               |                                               팀장                                               |
-
-### **역할 분담**
-
-<table>
-  <tr>
-    <th style="text-align:center;">박준홍</th>
-    <th style="text-align:center;">박태준</th>
-    <th style="text-align:center;">방하진</th>
-    <th style="text-align:center;">최연정</th>
-  </tr>
-  <tr>
-    <td style="text-align:left; vertical-align:top; width:25%;"><b>UI</b><br/>- 메인(프로필) 게시글 리스트<br/>- 메인(프로필) 게시글 상세보기 모달(모바일 버전)<br/>- 공용 확인 Alert 모달창<br/><br/><b>기능</b><br/>- 게시글 댓글 추가/삭제/신고<br/>- 게시글 좋아요 / 좋아요 취소하기<br/>- 게시글 리스트 불러오기<br/>- 게시글 수정<br/>- 프로필 수정<br/>- 프로필 페이지의 모집중인 게임 데이터 호출<br/>- 팔로우 / 언팔로우에 따른 화면 표현 기능<br/><br/><b>기타</b><br/>- PR리뷰 및 Merge 관리<br/>- 프로젝트 초기 설정<br/>- 각종 컴포넌트 테스트 및 예외처리 작업<br/>- 중복 컴포넌트 코드 리팩토링<br/>- README.md 작성</td>
-    <td style="text-align:left; vertical-align:top; width:25%;"><b>UI</b><br/>- 로그인 및 회원가입<br/>- 팔로워 및 팔로잉 리스트<br/>- 게임 모집글 모달창<br/>- 게임 참가자 리스트 모달창<br/><br/><b>기능</b><br/>- 로그인 및 회원가입<br/>- 프로필 페이지의 ProfileDetail 부분<br/>- 팔로워 리스트, 팔로잉 리스트<br/>- 게임 모집글 상세 모달<br/>- 게임 참여, 떠나기 기능<br/>- 게임 참가자 리스트<br/>- 로그아웃<br/><br/><b>기타</b><br/>- AWS 배포<br/>- 메인 포스터 작업</td>
-    <td style="text-align:left; vertical-align:top; width:25%;"><b>UI</b><br/>- Splash<br/>- Loading<br/>- Header<br/>- Footer<br/>- Menu Modal<br/>- 검색<br/>- 채팅<br/>- 메인 피드<br/>- 프로필 상세<br/>- 프로필 게시글 리스트<br/>- 게시글 상세모달<br/><br/><b>기능</b><br/>- 검색<br/>- 프로필 게시글 리스트<br/>- 메뉴 모달<br/>- 채팅<br/><br/><b>기타</b><br/>-디자인 목업<br/>- 기능 명세서 작성<br/>- 와이어프레임 설계<br/>- GlobalStyle(Reset.css) / Font.css 설정</td>
-    <td style="text-align:left; vertical-align:top; width:25%;"><b>UI</b><br/>- 404 에러 페이지<br/>- 팔로잉 없을 시 메인피드 페이지<br/>- 프로필 수정 페이지<br/>- 게임 게시글<br/>- 게임 모집글<br/><br/><b>기능</b><br/>- 프로필 수정 페이지<br/>- 게임 게시글 작성 / 수정<br/>- 게임 모집글 작성<br/><br/><b>기타</b><br/>- 노션 페이지 작성<br/>- 회고록 작성</td>
-  </tr>
-</table>
-
-## **3. 개발 일정**
-
-<b>개발 기간 : 2023년 10월 16일 ~ 2023년 11월 7일</b>
-
-|          **주차**          | **내용**                                                                                                                                                   |
-| :------------------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1주차<br/> (10/16 ~ 10/21) | - 주제 선정 및 기획 <br/> - 기술 스택 조사<br/> - 목업 디자인 및 기술 리스트 작성<br/> - GIT 협업 공부 <br/> - 프로젝트 초기 셋팅(Prettier, Convention 등) |
-| 2주차 <br> (10/22 ~ 10/28) | - 디자인 및 기능 개발 시작 <br/>                                                                                                                           |
-| 3주차 <br> (10/29 ~ 11/03) | - 1차 점검 후, 코드 수정 및 예외처리 작업 시작<br/> - 필수 기능 구현 완료<br/> - 웹 반응형 작업 <br/> - 부가 기능 구현(상품 판매 API 커스텀)               |
-| 4주차 <br> (11/04 ~ 11/06) | - 디자인 보완 및 코드 리팩토링 작업 <br/> - README.md 작성<br/> - 서비스 배포(AWS)                                                                         |
+> Exhi-lover는 전시회를 손쉽게 검색 할 수 있는 입니다.<br/>
+> 조진호의 solo project 입니다.
+[Exhi-lover URL](https://exhi-lover.com)
+                                                                 |
 
 ## **4. 프로젝트 협업 방식**
 
@@ -254,38 +210,80 @@ ex) 변수: let isTrue = true; 함수: onClickHanlder() => {}
 ## **7. GameBuddy 프로젝트 구조**
 
 ```
-🎮 GameBuddy
+EXHI_LOVER
 ├─ .github
-|  ├─ Issue_template ────────────── 이슈템플릿.md
-|  └─ PULL_REQUEST_TEMPLATE.MD ──── PR템플릿.md
-├─ public ───────────────────────── Public 폴더
-|  └─ index.html
-└─ 📂 src
-	 ├─ 📂 API ────────────────────── API 호출 함수 모음
-	 ├─ 📂 assets ─────────────────── 폰트, 이미지 등 각종 정적 파일 모음
-	 ├─ 📂 Components ─────────────── 컴포넌트 모음
-	 |  ├─ 📂 Chat ────────────────── 채팅
-	 |  ├─ 📂 Commons ─────────────── 공용으로 사용되는 컴포넌트
-	 |  ├─ 📂 Main ────────────────── 메인 화면
-	 |  ├─ 📂 Profile ─────────────── 프로필
-	 |  ├─ 📂 Search ──────────────── 회원 검색
-	 |  ├─ 📂 Sign
-	 |  |  ├─ 📂 Login ─────────────── 로그인
-	 |  |  ├─ 📂 SignUp ───────────── 회원가입
-	 |  ├─ 📂 Splash ──────────────── 스플래시
-	 |  ├─ 📂 Write ───────────────── 게시글 작성
-	 ├─ 📂 Functional ───────────────── 데이터 파싱 함수 모음
-	 ├─ 📂 Pages
-	 ├─ Router ──────────────────── 이동할 페이지 경로 지정
-	 ├─ Store ───────────────────── 전역 상태 관리 공간
-	 ├─ styles
-	 ├─── App.js
-	 ├─── index.js
-	 ├─ .gitignore
-	 ├─ .prettierrc.js
-	 ├─ package-lock.json
-	 ├─ package.json
-	 └─ README.md
+|  
+├- 📂client
+|      ├──── 📂build
+|      |        ├─ 📂 static
+|      |        └─ 📂 upload
+|      |
+|      ├─── 📂 node_modules
+|      ├─── 📂 public
+|      |          ├─ 📂 favicon
+|      |          ├─ 📂 upload
+|      |          ├─ favicon.ico
+|      |          └─ index.html
+|      |
+|      ├─── 📂 component
+|      |           ├─ 📂 button
+|      |           |       ├─ MainButton.js
+|      |           |       └─ SearchBar.js
+|      |           ├─ 📂 calendar
+|      |           |         ├─ Calendar.css
+|      |           |         └─ MyCalendar.js
+|      |           ├─ 📂 detail
+|      |           |       ├─ DetailTemplate.js
+|      |           |       └─ DetailViewer.js
+|      |           ├─ 📂 hashtag
+|      |           |       ├─ HashTag.js
+|      |           |       ├─ HashTagTemplate.js
+|      |           |       ├─ IdToShow.js
+|      |           |       ├─ Tags.js
+|      |           |       └─ TagCheckBox.js
+|      |           ├─ 📂 layout
+|      |           |       ├─ Footer.js
+|      |           |       ├─ HorizontalLine.js
+|      |           |       ├─ MainHeader.js
+|      |           |       └─ SubHeader.js
+|      |           ├─ 📂 map
+|      |           |      ├─ FetchShowInfo.js
+|      |           |      ├─ FetchShowTags.js
+|      |           |      ├─ KaKaoMap.js
+|      |           |      ├─ MapTemplate.js
+|      |           |      ├─ Marker.js
+|      |           |      ├─ MiniMap.js
+|      |           |      └─ SwipeableEdgeDrawere.js
+|      |           ├─ 📂 post
+|      |           |       ├─ Post.js
+|      |           |       ├─ PostSkeleton.js
+|      |           |       └─ PostTemplate.js
+|      |           └─ 📂 search   
+|      |                   └─ Search.js
+|      ├─── 📂 lib     
+|      |        ├─ 📂 api
+|      |        |   └─ api.js
+|      |        ├─ 📂 icon
+|      |        ├─ 📂 logo
+|      |        └─ 📂 styles
+|      |                ├─ colorSet.js
+|      |                ├─ fontStyle.js
+|      |                └─ palette.js
+|      └─── 📂 pages
+|                ├─ DetailPage.js
+|                └─ MainPage.js
+├- App.css
+├- App.js
+├- index.css
+├- reportWebVitals.js
+├- setupTest.js
+└─ 📂 server
+	 ├─── 📂 node_modules
+	 └─── server.js
+	   
+
+
+
 ```
 
 ## **8. GameBuddy 기능 동작**
