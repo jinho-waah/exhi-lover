@@ -37,7 +37,8 @@
 <tr>
  <td align="center">배포</td>
  <td>
-    <img src="https://img.shields.io/badge/Amazon%20AWS-gray?style=for-the-badge&logo=AmazonAWS&logoColor=white"/>&nbsp
+	 <img src="https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=Node.js&logoColor=white"/>&nbsp
+    <img src="https://img.shields.io/badge/Express-000000?style=flat-square&logo=Express&logoColor=white"/>&nbsp
 </tr>
 </table>
 
