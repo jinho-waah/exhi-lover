@@ -9,29 +9,7 @@
 [Exhi-lover URL](https://exhi-lover.com)
                                                                  |
 
-## **4. 프로젝트 협업 방식**
-
-- 커뮤니케이션
-
-  - [GameBuddy Notion](https://mammoth-sassafras-ff5.notion.site/10-10-95d035c5c9894842951c12901adc204e?pvs=4)
-
-- 기능 명세서 및 와이어 프레임
-
-  - [GameBuddy Figma](https://www.figma.com/file/G3Ft0tEBByKXmf3iKSHBON/Game-Buddy?type=design&node-id=56%3A1893&mode=design&t=wcgJPehcOAENWIFD-1)
-
-- 데일리 스크럼
-
-  - 매일 오전 10시, 오후 6시 회의
-  - 회의 주제 진행 상황 공유 및 문제 해결
-
-- GitHub 협업 방식
-  - GitHub의 Projects 기능을 이용하여 TodoList작성
-  - GitFlow를 이용
-    - `master`: 프로젝트의 최종본
-    - `develop`: feature branch에서 작업물을 합치는 branch
-    - `feature`: 기능 개발 branch
-
-## **5. 개발 환경 & 핵심 기술 설명**
+## **2. 개발 환경 & 핵심 기술 설명**
 
 ### **개발 환경**
 
@@ -207,7 +185,7 @@ ex) 변수: let isTrue = true; 함수: onClickHanlder() => {}
 
 </details>
 
-## **7. GameBuddy 프로젝트 구조**
+## **3. EXHI-LOVER 프로젝트 구조**
 
 ```
 EXHI_LOVER
