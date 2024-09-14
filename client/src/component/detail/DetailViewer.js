@@ -343,7 +343,7 @@ const DetailViewer = ({ show, color, tags }) => {
     show_term_start,
     show_term_end,
     show_city,
-    gallery,
+    gallery_id,
     show_place,
     show_place_detail,
     show_place_eng,
@@ -353,18 +353,20 @@ const DetailViewer = ({ show, color, tags }) => {
     show_brief,
     instagram_search,
   } = show[0];
+
   useEffect(() => {
     const fetchGalleries = async () => {
       try {
         setError(null);
-        const data = await fetchGalleryInfo(gallery);
+        const data = await fetchGalleryInfo(gallery_id);
+        console.log(data);
         setGalleryInfo(data);
       } catch (e) {
         setError(e);
       }
     };
     fetchGalleries();
-  }, [gallery]);
+  }, [gallery_id]);
 
   let gallery_add_word = "";
   let gallery_phone_num = "";
@@ -519,7 +521,7 @@ const DetailViewer = ({ show, color, tags }) => {
               <CalendarMonthIcon />
               {show_term_start} ~ {show_term_end}
             </p>
-            <h4>휴무일: {business_week}</h4>
+            <h4>영업일: {business_week}</h4>
             <MyCalendar startDate={show_term_start} endDate={show_term_end} />
           </OpeningTime>
 

@@ -1,6 +1,6 @@
 import axios from "axios";
-// const mainUrl = "http://localhost:5100";
-const mainUrl = "https://exhi-lover.com";
+const mainUrl = "http://localhost:5100";
+// const mainUrl = "https://art-lover.co.kr";
 
 // default () => shows
 export const fetchAllShows = async () => {
@@ -67,8 +67,8 @@ export const fetchShowByShowId = async (showIds) => {
 };
 
 //DetailViewer.js () => gallery
-export const fetchGalleryInfo = async (gallery) => {
-  const url = `/api/gallery/information/${gallery}`;
+export const fetchGalleryInfo = async (galleryId) => {
+  const url = `/api/gallery/information/${galleryId}`;
   const response = await axios.get(`${mainUrl}${url}`);
   return response.data[0];
 };

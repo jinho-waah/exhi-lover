@@ -49,9 +49,8 @@ const PostTemplate = ({
   const handleChange = (event, newPage) => {
     setPaginationValue(newPage); // Update the paginationValue state with the new page number
   };
-  const handleScroll = () => {
-    console.log("hi");
-  };
+
+  // console.log(shows);
 
   useEffect(() => {
     const fetchTagsId = async () => {

@@ -120,16 +120,17 @@ const Post = ({ show, color, tags }) => {
   const [imageExists, setImageExists] = useState(true);
 
   useEffect(() => {
-    // Check if the image exists
     const img = new Image();
     img.src = imgSrc;
     img.onload = () => {
       setImageExists(true);
     };
-    img.onerror = () => {
+    img.onerror = (error) => {
+      console.error("Image failed to load:", imgSrc, error);
       setImageExists(false);
     };
   }, [imgSrc]);
+
 
   const handleClickOpen = () => {
     navigate(`/shows/${id}`, { state: { color } });
