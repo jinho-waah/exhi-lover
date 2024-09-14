@@ -75,9 +75,9 @@ export const fetchGalleryInfo = async (galleryId) => {
 
 //Map.js > galleries table get
 export const fetchGalleryLocation = async () => {
-  const timestamp = Date.now();
-  // const url = "/api/gallery/location";
-  const url = `/api/gallery/location?timestamp=${timestamp}`;
+  // const timestamp = Date.now();
+  const url = "/api/gallery/location";
+  // const url = `/api/gallery/location?timestamp=${timestamp}`;
   const response = await axios.get(`${mainUrl}${url}`);
   return response.data;
 };

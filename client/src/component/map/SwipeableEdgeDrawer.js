@@ -152,6 +152,9 @@ const SwipeableEdgeDrawer = ({ gallery, onClose }) => {
     navigate(`/shows/${id}`);
     // navigate(`/shows/${id}`, { state: { color } });
   };
+
+  // console.log(galleryInfo);
+
   return (
     <>
       <GlobalStyle />
@@ -165,7 +168,7 @@ const SwipeableEdgeDrawer = ({ gallery, onClose }) => {
               className="close"
               onClick={handleClose}
             />
-            {galleryInfo.length !== 0 ? (
+            {galleryInfo.length > 0 ? (
               <ScrollBox>
                 {galleryInfo.map((show, index) => {
                   const imgSrc =
@@ -196,7 +199,9 @@ const SwipeableEdgeDrawer = ({ gallery, onClose }) => {
                             : "Loading"}
                         </div>
                         <div className="mapShowTerm">
-                          {show.show_term_start} ~ {show.show_term_end}
+                          {show.show_term_start
+                            ? `${show.show_term_start} ~ ${show.show_term_end}`
+                            : ""}
                         </div>
                       </Inform>
                     </Content>
@@ -215,4 +220,6 @@ const SwipeableEdgeDrawer = ({ gallery, onClose }) => {
   );
 };
 
-export default React.memo(SwipeableEdgeDrawer);
+export default SwipeableEdgeDrawer;
+
+

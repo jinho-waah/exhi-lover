@@ -19,6 +19,5 @@ root.render(
     <QueryClientProvider client={queryCient}>
       <App />
     </QueryClientProvider>
-    {/* changed */}
   </BrowserRouter>
 );

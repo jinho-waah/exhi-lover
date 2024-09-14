@@ -1,14 +1,15 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { useQuery } from "@tanstack/react-query"; // Tanstack Query를 사용하기 위해 추가
 
 import PostTemplate from "../post/PostTemplate";
 import SearchBar from "../button/SearchBar";
 import styled from "styled-components";
 import HorizontalLine from "../layout/HorizontalLine";
-import { fetchShowsbySearchQuery } from "../../lib/api/Api";
+import { fetchShowsbySearchQuery } from "../../lib/api/Api"; // 서버 데이터를 가져오는 함수
 import PostSkeleton from "../post/PostSkeleton";
 
 const SearchContainer = styled.div`
@@ -20,7 +21,6 @@ const ShowContent = styled.div`
   text-align: left;
   font-size: 40px;
   font-weight: bold;
-  // line-height: 1.2px;
   padding: 6px 0 0 18px;
   color: white;
   font-family: "Happiness-Sans-Title", sans-serif;
@@ -50,14 +50,9 @@ const darkTheme = createTheme({
 });
 
 function Search() {
-  const [shows, setShows] = useState(null);
-  const [error, setError] = useState(null);
   const [paginationValue, setPaginationValue] = useState(1);
-  const [pageCount, setPageCount] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-
   const [selectedValue, setSelectedValue] = useState("1");
-  const prevSelectedValueRef = useRef(selectedValue);
   const initialLoadRef = useRef(true);
 
   const onSearch = useCallback(
@@ -65,61 +60,24 @@ function Search() {
     []
   );
 
-  useEffect(() => {
-    const storedSelectedValue = localStorage.getItem("selectedValue");
-    if (storedSelectedValue) {
-      setSelectedValue(storedSelectedValue);
-    }
-  }, []);
+  // Tanstack Query 사용
+  const {
+    data: showsData,
+    error,
+    isLoading,
+  } = useQuery({
+    queryKey: ["shows", searchQuery, selectedValue, paginationValue],
+    queryFn: () =>
+      fetchShowsbySearchQuery(searchQuery, selectedValue, paginationValue),
+    keepPreviousData: true, // 추가적인 옵션을 여기에 넣을 수 있습니다.
+    staleTime: 5000, // 캐시 유효 시간
+  });
 
-  useEffect(() => {
-    const fetchShows = async () => {
-      try {
-        setError(null);
-        setShows(null);
-        const showsData = await fetchShowsbySearchQuery(
-          searchQuery,
-          selectedValue,
-          paginationValue
-        );
-        setShows(showsData.rows);
-        setPageCount(Math.ceil(showsData.totalCount / 10));
-      } catch (e) {
-        setError(e);
-      }
-    };
+  // 페이지 카운트를 계산합니다.
+  const pageCount = showsData ? Math.ceil(showsData.totalCount / 10) : 1;
 
-    fetchShows();
-  }, [searchQuery, paginationValue]);
-
-  useEffect(() => {
-    const fetchShowsByValue = async () => {
-      try {
-        setError(null);
-        setShows(null);
-        const showsData = await fetchShowsbySearchQuery(
-          searchQuery,
-          selectedValue,
-          paginationValue
-        );
-        setShows(showsData.rows);
-        setPageCount(Math.ceil(showsData.totalCount / 10));
-      } catch (e) {
-        setError(e);
-      }
-    };
-
-    if (prevSelectedValueRef.current !== selectedValue) {
-      fetchShowsByValue();
-      prevSelectedValueRef.current = selectedValue; // Update the stored previous value
-    }
-  }, [selectedValue, paginationValue]);
-
-  useEffect(() => {
-    localStorage.setItem("selectedValue", selectedValue);
-  }, [selectedValue]);
-
-  useEffect(() => {
+  // 페이징 변화 시 스크롤 조정
+  React.useEffect(() => {
     if (!initialLoadRef.current) {
       let location = document.querySelector("#Exhi").offsetTop;
       window.scrollTo({
@@ -130,7 +88,8 @@ function Search() {
     }
   }, [paginationValue]);
 
-  if (error)
+  // 데이터 로딩 중일 때
+  if (isLoading) {
     return (
       <>
         <SearchBar onSearch={onSearch} />
@@ -138,15 +97,52 @@ function Search() {
         <ThemeProvider theme={darkTheme}>
           <SearchContainer>
             <ShowContent id="Exhi">Exhibitions</ShowContent>
-
             <SelectArea>
               <FormControl>
                 <Select
-                  value={selectedValue} // Use the selectedValue state here
-                  onChange={(event) => setSelectedValue(event.target.value)} // Update the selectedValue state
+                  value={selectedValue}
+                  onChange={(event) => setSelectedValue(event.target.value)}
                   size="small"
                   variant="outlined"
                   color="primary"
+                  MenuProps={{
+                    disableScrollLock: true, // 이 속성을 추가하여 스크롤 잠금 비활성화
+                  }}
+                >
+                  <MenuItem value="1">최신순</MenuItem>
+                  <MenuItem value="2">개최순</MenuItem>
+                  <MenuItem value="3">마감순</MenuItem>
+                  <MenuItem value="4">상설전</MenuItem>
+                </Select>
+              </FormControl>
+            </SelectArea>
+          </SearchContainer>
+        </ThemeProvider>
+        <PostSkeleton />
+      </>
+    );
+  }
+
+  // 에러가 발생했을 때
+  if (error) {
+    return (
+      <>
+        <SearchBar onSearch={onSearch} />
+        <HorizontalLine key="horizontal-line" />
+        <ThemeProvider theme={darkTheme}>
+          <SearchContainer>
+            <ShowContent id="Exhi">Exhibitions</ShowContent>
+            <SelectArea>
+              <FormControl>
+                <Select
+                  value={selectedValue}
+                  onChange={(event) => setSelectedValue(event.target.value)}
+                  size="small"
+                  variant="outlined"
+                  color="primary"
+                  MenuProps={{
+                    disableScrollLock: true, // 이 속성을 추가하여 스크롤 잠금 비활성화
+                  }}
                 >
                   <MenuItem value="1">최신순</MenuItem>
                   <MenuItem value="2">개최순</MenuItem>
@@ -162,7 +158,10 @@ function Search() {
         </NoneShow>
       </>
     );
-  if (!shows)
+  }
+
+  // 검색 결과가 없을 때
+  if (showsData?.rows.length === 0) {
     return (
       <>
         <SearchBar onSearch={onSearch} />
@@ -173,40 +172,14 @@ function Search() {
             <SelectArea>
               <FormControl>
                 <Select
-                  value={selectedValue} // Use the selectedValue state here
-                  onChange={(event) => setSelectedValue(event.target.value)} // Update the selectedValue state
+                  value={selectedValue}
+                  onChange={(event) => setSelectedValue(event.target.value)}
                   size="small"
                   variant="outlined"
                   color="primary"
-                >
-                  <MenuItem value="1">최신순</MenuItem>
-                  <MenuItem value="2">개최순</MenuItem>
-                  <MenuItem value="3">마감순</MenuItem>
-                  <MenuItem value="4">상설전</MenuItem>
-                </Select>
-              </FormControl>
-            </SelectArea>
-          </SearchContainer>
-        </ThemeProvider>
-        <PostSkeleton />
-      </>
-    );
-  if (shows.length === 0)
-    return (
-      <>
-        <SearchBar onSearch={onSearch} />
-        <HorizontalLine key="horizontal-line" />
-        <ThemeProvider theme={darkTheme}>
-          <SearchContainer>
-            <ShowContent id="Exhi">Exhibitions</ShowContent>
-            <SelectArea>
-              <FormControl>
-                <Select
-                  value={selectedValue} // Use the selectedValue state here
-                  onChange={(event) => setSelectedValue(event.target.value)} // Update the selectedValue state
-                  size="small"
-                  variant="outlined"
-                  color="primary"
+                  MenuProps={{
+                    disableScrollLock: true, // 이 속성을 추가하여 스크롤 잠금 비활성화
+                  }}
                 >
                   <MenuItem value="1">최신순</MenuItem>
                   <MenuItem value="2">개최순</MenuItem>
@@ -223,43 +196,9 @@ function Search() {
         </NoneShow>
       </>
     );
-  if (shows.length !== 0) {
-    return (
-      <>
-        <SearchBar onSearch={onSearch} />
-        <HorizontalLine key="horizontal-line" />
-        <ThemeProvider theme={darkTheme}>
-          <SearchContainer>
-            <ShowContent id="Exhi">Exhibitions</ShowContent>
-            <SelectArea>
-              <FormControl>
-                <Select
-                  value={selectedValue} // Use the selectedValue state here
-                  onChange={(event) => setSelectedValue(event.target.value)} // Update the selectedValue state
-                  size="small"
-                  variant="outlined"
-                  color="primary"
-                >
-                  <MenuItem value="1">최신순</MenuItem>
-                  <MenuItem value="2">개최순</MenuItem>
-                  <MenuItem value="3">마감순</MenuItem>
-                  <MenuItem value="4">상설전</MenuItem>
-                </Select>
-              </FormControl>
-            </SelectArea>
-          </SearchContainer>
-        </ThemeProvider>
-        {shows && (
-          <PostTemplate
-            shows={shows}
-            paginationValue={paginationValue}
-            setPaginationValue={setPaginationValue}
-            pageCount={pageCount}
-          />
-        )}
-      </>
-    );
   }
+
+  // 검색 결과가 있을 때
   return (
     <>
       <SearchBar onSearch={onSearch} />
@@ -270,11 +209,15 @@ function Search() {
           <SelectArea>
             <FormControl>
               <Select
-                value={selectedValue} // Use the selectedValue state here
-                onChange={(event) => setSelectedValue(event.target.value)} // Update the selectedValue state
+                value={selectedValue}
+                onChange={(event) => setSelectedValue(event.target.value)}
                 size="small"
                 variant="outlined"
                 color="primary"
+                disableScrollLock
+                MenuProps={{
+                  disableScrollLock: true, // 이 속성을 추가하여 스크롤 잠금 비활성화
+                }}
               >
                 <MenuItem value="1">최신순</MenuItem>
                 <MenuItem value="2">개최순</MenuItem>
@@ -285,10 +228,12 @@ function Search() {
           </SelectArea>
         </SearchContainer>
       </ThemeProvider>
-      <NoneShow>
-        <p>검색 결과에 맞는 전시가 없습니다.</p>
-        <p>다른 검색어를 입력해주세요.</p>
-      </NoneShow>
+      <PostTemplate
+        shows={showsData?.rows}
+        paginationValue={paginationValue}
+        setPaginationValue={setPaginationValue}
+        pageCount={pageCount}
+      />
     </>
   );
 }
