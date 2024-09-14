@@ -2,7 +2,7 @@
 
 ## **1. Exhi-lover 소개**
 
-![GameBuddy Poster](https://github.com/FRONTENDSCHOOL7/final-10-GameBuddy/assets/80045006/f6156e63-9a8d-4af4-aab5-4b0ad3da53e3)
+![스크린샷 2024-09-14 오후 4 32 51](https://github.com/user-attachments/assets/f4e1dbce-3937-4f17-8d76-36b096d008ef)
 
 > Exhi-lover는 전시회를 손쉽게 검색 할 수 있는 입니다.<br/>
 > 조진호의 solo project 입니다. 
