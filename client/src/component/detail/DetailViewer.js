@@ -519,7 +519,9 @@ const DetailViewer = ({ show, color, tags }) => {
           <OpeningTime>
             <p>
               <CalendarMonthIcon />
-              {show_term_start} ~ {show_term_end}
+              {show_term_start
+                ? `${show_term_start} ~ ${show_term_end}`
+                : "상설 전시입니다"}
             </p>
             <h4>영업일: {business_week}</h4>
             <MyCalendar startDate={show_term_start} endDate={show_term_end} />
