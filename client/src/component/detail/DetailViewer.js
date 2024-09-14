@@ -386,196 +386,208 @@ const DetailViewer = ({ show, color, tags }) => {
   function handlePhoneCall() {
     window.location.href = `tel:${gallery_phone_num}`;
   }
-  useEffect(() => {
-    if (galleryInfo !== null) {
-      const [lat, lng] = galleryInfo.gallery_add_tude
-        .split(/[, ]+/)
-        .map(parseFloat);
-      setLatitude(lat);
-      setLongitude(lng);
-    }
-  }, [galleryInfo]);
+useEffect(() => {
+  if (galleryInfo && galleryInfo.gallery_add_tude) {
+    const coordinates = galleryInfo.gallery_add_tude
+      .split(/[, ]+/)
+      .map((coord) => coord.replace(/['"]+/g, ""));
 
-  const images = [];
-  for (let i = 1; i < show_imgs + 1; i++) {
-    const imgSrc = `/upload/shows/${show_place_eng}/${id}/${i}.webp`;
-    images.push(imgSrc);
+    if (coordinates.length === 2) {
+      const lat = parseFloat(coordinates[1]); // 위도는 두 번째 값
+      const lng = parseFloat(coordinates[0]); // 경도는 첫 번째 값
+      if (isNaN(lat) || isNaN(lng)) {
+        console.error("Invalid latitude or longitude:", coordinates);
+      } else {
+        setLatitude(lat);
+        setLongitude(lng);
+      }
+    } else {
+      console.error(
+        "Invalid coordinates format:",
+        galleryInfo.gallery_add_tude
+      );
+    }
   }
-  const settings = {
-    dots: true, // add dots as image indicators
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-  };
+}, [galleryInfo]);
 
-  const handleCopyClipBoard = async (text) => {
-    try {
-      await navigator.clipboard.writeText(text);
+const images = [];
+for (let i = 1; i < show_imgs + 1; i++) {
+  const imgSrc = `/upload/shows/${show_place_eng}/${id}/${i}.webp`;
+  images.push(imgSrc);
+}
+const settings = {
+  dots: true, // add dots as image indicators
+  infinite: true,
+  speed: 500,
+  slidesToShow: 1,
+  slidesToScroll: 1,
+};
 
-      alert("url 복사 되었습니다");
-    } catch (error) {
-      alert("url 복사 실패 했습니다");
-    }
-  };
+const handleCopyClipBoard = async (text) => {
+  try {
+    await navigator.clipboard.writeText(text);
 
-  return (
-    <>
-      <GlobalStyle />
-      <DetailViewerBlock>
-        <SliderWrapper color={color}>
-          <Slider {...settings}>
-            {images.map((image, index) => (
-              <MainImage key={index} src={image} alt="" loading="lazy" />
-            ))}
-          </Slider>
-        </SliderWrapper>
-        <MainTitle color={color}>
-          <p>{show_place}</p>
-          <strong>{show_name}</strong>
-        </MainTitle>
-        <Tags>
-          {tags &&
-            tags[id]
-              .sort((a, b) =>
-                a.includes("사진촬영 가능")
-                  ? -1
-                  : b.includes("사진촬영 가능")
-                  ? 1
-                  : 0
-              )
-              .map((tag, index) => {
-                return <div key={index}>#{tag}</div>;
-              })}
-        </Tags>
-        {(show_term_start || show_term_end) && (
-          <Term>
-            {show_term_start} ~ {show_term_end}
-          </Term>
-        )}
+    alert("url 복사 되었습니다");
+  } catch (error) {
+    alert("url 복사 실패 했습니다");
+  }
+};
 
-        <HorizontalLine />
+return (
+  <>
+    <GlobalStyle />
+    <DetailViewerBlock>
+      <SliderWrapper color={color}>
+        <Slider {...settings}>
+          {images.map((image, index) => (
+            <MainImage key={index} src={image} alt="" loading="lazy" />
+          ))}
+        </Slider>
+      </SliderWrapper>
+      <MainTitle color={color}>
+        <p>{show_place}</p>
+        <strong>{show_name}</strong>
+      </MainTitle>
+      <Tags>
+        {tags &&
+          tags[id]
+            .sort((a, b) =>
+              a.includes("사진촬영 가능")
+                ? -1
+                : b.includes("사진촬영 가능")
+                ? 1
+                : 0
+            )
+            .map((tag, index) => {
+              return <div key={index}>#{tag}</div>;
+            })}
+      </Tags>
+      {(show_term_start || show_term_end) && (
+        <Term>
+          {show_term_start} ~ {show_term_end}
+        </Term>
+      )}
 
-        <div
-          onClick={() =>
-            handleCopyClipBoard(decodeURIComponent(window.location.href))
-          }
+      <HorizontalLine />
+
+      <div
+        onClick={() =>
+          handleCopyClipBoard(decodeURIComponent(window.location.href))
+        }
+      >
+        <SharingArea>
+          <Sharing color={color}>
+            <p>공유하기</p>
+            <ShareIcon />
+          </Sharing>
+        </SharingArea>
+      </div>
+      {instagram_search && (
+        <Link
+          to={`https://www.instagram.com/explore/tags/${instagram_search}/`}
+          target="_blank"
         >
-          <SharingArea>
-            <Sharing color={color}>
-              <p>공유하기</p>
-              <ShareIcon />
-            </Sharing>
-          </SharingArea>
-        </div>
-        {instagram_search && (
-          <Link
-            to={`https://www.instagram.com/explore/tags/${instagram_search}/`}
-            target="_blank"
-          >
-            <InstagramSearchArea>
-              <InstagramSearch color={color}>
-                <p>인스타그램</p> <Instagram />
-              </InstagramSearch>
-            </InstagramSearchArea>
-          </Link>
-        )}
+          <InstagramSearchArea>
+            <InstagramSearch color={color}>
+              <p>인스타그램</p> <Instagram />
+            </InstagramSearch>
+          </InstagramSearchArea>
+        </Link>
+      )}
 
-        {show_link ? (
-          <Link to={show_link} target="_blank">
-            <BookingArea>
-              <Booking color={color}>
-                <p>
-                  {show_price !== 0 ? `${show_price}원` : "무료 전시입니다"}
-                </p>
-                <FileDownloadDoneSharpIcon />
-              </Booking>
-            </BookingArea>
-          </Link>
-        ) : (
+      {show_link ? (
+        <Link to={show_link} target="_blank">
           <BookingArea>
             <Booking color={color}>
-              <p>예매 할 필요 없는 전시입니다</p>
+              <p>{show_price !== 0 ? `${show_price}원` : "무료 전시입니다"}</p>
               <FileDownloadDoneSharpIcon />
             </Booking>
           </BookingArea>
+        </Link>
+      ) : (
+        <BookingArea>
+          <Booking color={color}>
+            <p>예매가 필요 없는 전시입니다</p>
+            <FileDownloadDoneSharpIcon />
+          </Booking>
+        </BookingArea>
+      )}
+      <ShowPrice />
+
+      <HorizontalLine />
+      <InfoBlock>
+        {show_artist && (
+          <>
+            <Artist>
+              <p>
+                <Person2SharpIcon />
+                참여 작가
+              </p>
+              {show_artist}
+            </Artist>
+            <HorizontalLine />
+          </>
         )}
-        <ShowPrice />
+        <OpeningTime>
+          <p>
+            <CalendarMonthIcon />
+            {show_term_start
+              ? `${show_term_start} ~ ${show_term_end}`
+              : "상설 전시입니다"}
+          </p>
+          <h4>영업일: {business_week}</h4>
+          <MyCalendar startDate={show_term_start} endDate={show_term_end} />
+        </OpeningTime>
 
         <HorizontalLine />
-        <InfoBlock>
-          {show_artist && (
-            <>
-              <Artist>
-                <p>
-                  <Person2SharpIcon />
-                  참여 작가
-                </p>
-                {show_artist}
-              </Artist>
-              <HorizontalLine />
-            </>
+        <GalleryInformation>
+          <p>
+            <AccountBalanceIcon />
+            관람 시간
+          </p>
+          {openingHoursObject && (
+            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+              {Object.entries(openingHoursObject).map(([day, hours]) => (
+                <li key={day}>
+                  {day}: {hours}
+                </li>
+              ))}
+            </ul>
           )}
-          <OpeningTime>
-            <p>
-              <CalendarMonthIcon />
-              {show_term_start
-                ? `${show_term_start} ~ ${show_term_end}`
-                : "상설 전시입니다"}
-            </p>
-            <h4>영업일: {business_week}</h4>
-            <MyCalendar startDate={show_term_start} endDate={show_term_end} />
-          </OpeningTime>
+        </GalleryInformation>
 
-          <HorizontalLine />
-          <GalleryInformation>
-            <p>
-              <AccountBalanceIcon />
-              관람 시간
-            </p>
-            {openingHoursObject && (
-              <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                {Object.entries(openingHoursObject).map(([day, hours]) => (
-                  <li key={day}>
-                    {day}: {hours}
-                  </li>
-                ))}
-              </ul>
+        <HorizontalLine />
+        <PhoneNum>
+          <p>
+            <PhoneIcon />
+            <a href={`tel:${gallery_phone_num}`} onClick={handlePhoneCall}>
+              {gallery_phone_num}
+            </a>
+          </p>
+        </PhoneNum>
+        <HorizontalLine />
+        <PlaceInfo>
+          <p>
+            <LocationOnSharpIcon />
+            <Link to={site} target="_blank">
+              {show_place}
+            </Link>
+          </p>
+          <div id="detail">
+            {gallery_add_word}
+            <br />
+            {show_place_detail ? show_place_detail : "상세 장소가 없습니다."}
+          </div>
+          <PlaceMap>
+            {latitude && longitude && (
+              <MiniMap name={show_place} lat={latitude} lng={longitude} />
             )}
-          </GalleryInformation>
-
-          <HorizontalLine />
-          <PhoneNum>
-            <p>
-              <PhoneIcon />
-              <a href={`tel:${gallery_phone_num}`} onClick={handlePhoneCall}>
-                {gallery_phone_num}
-              </a>
-            </p>
-          </PhoneNum>
-          <HorizontalLine />
-          <PlaceInfo>
-            <p>
-              <LocationOnSharpIcon />
-              <Link to={site} target="_blank">
-                {show_place}
-              </Link>
-            </p>
-            <div id="detail">
-              {gallery_add_word}
-              <br />
-              {show_place_detail ? show_place_detail : "상세 장소가 없습니다."}
-            </div>
-            <PlaceMap>
-              {latitude && longitude && (
-                <MiniMap name={show_place} lat={latitude} lng={longitude} />
-              )}
-            </PlaceMap>
-          </PlaceInfo>
-        </InfoBlock>
-      </DetailViewerBlock>
-    </>
-  );
+          </PlaceMap>
+        </PlaceInfo>
+      </InfoBlock>
+    </DetailViewerBlock>
+  </>
+);
 };
 
 export default React.memo(DetailViewer);
