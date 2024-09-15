@@ -70,9 +70,7 @@ function Search() {
     queryFn: () =>
       fetchShowsbySearchQuery(searchQuery, selectedValue, paginationValue),
     keepPreviousData: true, // 추가적인 옵션을 여기에 넣을 수 있습니다.
-    staleTime: 5000, // 캐시 유효 시간
   });
-
   // 페이지 카운트를 계산합니다.
   const pageCount = showsData ? Math.ceil(showsData.totalCount / 10) : 1;
 
@@ -87,7 +85,6 @@ function Search() {
       initialLoadRef.current = false;
     }
   }, [paginationValue]);
-
   // 데이터 로딩 중일 때
   if (isLoading) {
     return (
@@ -110,9 +107,10 @@ function Search() {
                   }}
                 >
                   <MenuItem value="1">최신순</MenuItem>
-                  <MenuItem value="2">개최순</MenuItem>
-                  <MenuItem value="3">마감순</MenuItem>
-                  <MenuItem value="4">상설전</MenuItem>
+                  {/* <MenuItem value="2">개최순</MenuItem> */}
+                  <MenuItem value="2">마감순</MenuItem>
+                  <MenuItem value="3">상설전</MenuItem>
+                  <MenuItem value="4">예정전시</MenuItem>
                 </Select>
               </FormControl>
             </SelectArea>
@@ -145,9 +143,10 @@ function Search() {
                   }}
                 >
                   <MenuItem value="1">최신순</MenuItem>
-                  <MenuItem value="2">개최순</MenuItem>
-                  <MenuItem value="3">마감순</MenuItem>
-                  <MenuItem value="4">상설전</MenuItem>
+                  {/* <MenuItem value="2">개최순</MenuItem> */}
+                  <MenuItem value="2">마감순</MenuItem>
+                  <MenuItem value="3">상설전</MenuItem>
+                  <MenuItem value="4">예정전시</MenuItem>
                 </Select>
               </FormControl>
             </SelectArea>
@@ -182,9 +181,10 @@ function Search() {
                   }}
                 >
                   <MenuItem value="1">최신순</MenuItem>
-                  <MenuItem value="2">개최순</MenuItem>
-                  <MenuItem value="3">마감순</MenuItem>
-                  <MenuItem value="4">상설전</MenuItem>
+                  {/* <MenuItem value="2">개최순</MenuItem> */}
+                  <MenuItem value="2">마감순</MenuItem>
+                  <MenuItem value="3">상설전</MenuItem>
+                  <MenuItem value="4">예정전시</MenuItem>
                 </Select>
               </FormControl>
             </SelectArea>
@@ -220,9 +220,10 @@ function Search() {
                 }}
               >
                 <MenuItem value="1">최신순</MenuItem>
-                <MenuItem value="2">개최순</MenuItem>
-                <MenuItem value="3">마감순</MenuItem>
-                <MenuItem value="4">상설전</MenuItem>
+                {/* <MenuItem value="2">개최순</MenuItem> */}
+                <MenuItem value="2">마감순</MenuItem>
+                <MenuItem value="3">상설전</MenuItem>
+                <MenuItem value="4">예정전시</MenuItem>
               </Select>
             </FormControl>
           </SelectArea>

@@ -162,21 +162,19 @@ const Post = ({ show, color, tags }) => {
                     </h4>
                   )}
 
-                  {tags ? (
-                    tags
-                      .sort((a, b) =>
-                        a.includes("사진촬영 가능")
-                          ? -1
-                          : b.includes("사진촬영 가능")
-                          ? 1
-                          : 0
-                      )
-                      .map((tag, index) => {
-                        return <h5 key={index}>#{tag}</h5>;
-                      })
-                  ) : (
-                    <h5>loading...</h5>
-                  )}
+                  {tags
+                    ? tags
+                        .sort((a, b) =>
+                          a.includes("사진촬영 가능")
+                            ? -1
+                            : b.includes("사진촬영 가능")
+                            ? 1
+                            : 0
+                        )
+                        .map((tag, index) => {
+                          return <h5 key={index}>#{tag}</h5>;
+                        })
+                    : " "}
                 </PostContent>
               </ContextBox>
               <ImageBlock>

@@ -15,9 +15,10 @@ export const fetchShowsbySearchQuery = async (
   selectedValue,
   paginationValue
 ) => {
-  const url = searchQuery
-    ? `/api/shows/search/${paginationValue}/${searchQuery}/${selectedValue}`
-    : `/api/show/${paginationValue}/${selectedValue}`;
+  const url =
+    searchQuery && searchQuery.trim() !== ""
+      ? `/api/shows/search/${paginationValue}/${searchQuery}/${selectedValue}`
+      : `/api/show/${paginationValue}/${selectedValue}`;
   const response = await axios.get(`${mainUrl}${url}`);
   return response.data;
 };

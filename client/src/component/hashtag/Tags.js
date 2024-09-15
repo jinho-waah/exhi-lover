@@ -34,6 +34,7 @@ export const genre = {
   공예: 58,
   영상: 59,
   판화: 60,
+  문화재: 61,
 };
 
 export const artMovement = {

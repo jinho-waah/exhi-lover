@@ -201,7 +201,7 @@ const SwipeableEdgeDrawer = ({ gallery, onClose }) => {
                         <div className="mapShowTerm">
                           {show.show_term_start
                             ? `${show.show_term_start} ~ ${show.show_term_end}`
-                            : ""}
+                            : "상설전시"}
                         </div>
                       </Inform>
                     </Content>
