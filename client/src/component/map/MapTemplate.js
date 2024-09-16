@@ -73,7 +73,13 @@ const MapTemplate = () => {
       setFlag(true); // 모든 로딩이 완료되었을 때 flag를 true로 설정
     }
   }, [state.isLoading, markersLoading]);
-
+  if (!flag) {
+    return (
+      <>
+        <div>loading...</div>
+      </>
+    );
+  }
   return (
     <MapBox>
       {flag && (

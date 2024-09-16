@@ -1,4 +1,5 @@
 import logo_white from "../../lib/logo/logo_white.png";
+import new_white4 from "../../lib/logo/new_white4.png";
 import styled from "styled-components";
 import React from "react";
 import { Link } from "react-router-dom";
@@ -23,7 +24,7 @@ const SubHeader = () => {
   return (
     <Container>
       <Link to={"/"}>
-        <ImageHeader src={logo_white} className="Logo" />
+        <ImageHeader src={new_white4} className="Logo" />
       </Link>
     </Container>
   );

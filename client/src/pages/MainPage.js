@@ -108,7 +108,7 @@ function MainPage({ val }) {
         <img src="/upload/main/3.webp" alt="" />
       </MainImage>
       <InformBox>
-        <InformTitle>Welcome to Exhi-lover</InformTitle>
+        <InformTitle>Welcome to Art-lover</InformTitle>
         {/* <InformTitle>Art & Love: Always Beside Us</InformTitle> */}
         <InformContext>
           {/* <p style={{ paddingBottom: "0px" }}>{splitQuote[0]}</p>

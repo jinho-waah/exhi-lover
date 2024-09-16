@@ -153,8 +153,6 @@ const SwipeableEdgeDrawer = ({ gallery, onClose }) => {
     // navigate(`/shows/${id}`, { state: { color } });
   };
 
-  // console.log(galleryInfo);
-
   return (
     <>
       <GlobalStyle />

@@ -1,5 +1,5 @@
 /*global kakao*/
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import icon from "../../lib/icon/loc.png";
 import iconDark from "../../lib/icon/dot.png";
 import SwipeableEdgeDrawer from "./SwipeableEdgeDrawer";
@@ -7,7 +7,7 @@ import FetchShowTags from "./FetchShowTags";
 
 function KakaoMap({ lat, lng, flag, galleriesMarker }) {
   const mapHeight = (window.innerWidth >= 560 ? 560 : window.innerWidth) * 1.1;
-  const mapContainer = useRef(null);
+  const mapContainer = useRef(document.getElementById("map"));
 
   const [selectedMarker, setSelectedMarker] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false); // Add a state variable for drawer visibility
@@ -43,6 +43,7 @@ function KakaoMap({ lat, lng, flag, galleriesMarker }) {
         : null
     );
 
+    // 내위치 알려주는 마커.
     if (flag) {
       const markerPosition = new window.kakao.maps.LatLng(lat, lng);
       const marker = new window.kakao.maps.Marker({
@@ -56,7 +57,6 @@ function KakaoMap({ lat, lng, flag, galleriesMarker }) {
     }
 
     galleriesMarker.forEach((galleryMarker) => {
-      // console.log("1st", galleryMarker);
       if (galleryMarker.onDisplay) {
         const setGalleryMarker = new window.kakao.maps.Marker({
           map: map,
@@ -67,7 +67,6 @@ function KakaoMap({ lat, lng, flag, galleriesMarker }) {
           image: galleryMarkerImage,
           zIndex: 99,
         });
-        // console.log("2nd", galleryMarker);
 
         window.kakao.maps.event.addListener(setGalleryMarker, "click", () => {
           map.panTo(setGalleryMarker.getPosition());
@@ -96,7 +95,6 @@ function KakaoMap({ lat, lng, flag, galleriesMarker }) {
           ),
           image: galleryMarkerImageDark,
         });
-
         window.kakao.maps.event.addListener(
           setGalleryMarker,
           "click",
@@ -106,8 +104,7 @@ function KakaoMap({ lat, lng, flag, galleriesMarker }) {
               top: document.body.scrollHeight,
               behavior: "smooth",
             });
-            // console.log(setGalleryMarker);
-            setSelectedMarker(setGalleryMarker);
+            setSelectedMarker(galleryMarker);
             setLastestClickedMarker(setGalleryMarker.getPosition());
             localStorage.setItem(
               "lastClickedMarker",
@@ -121,9 +118,7 @@ function KakaoMap({ lat, lng, flag, galleriesMarker }) {
         );
       }
     });
-  }, [flag, galleriesMarker]);
-
-  // console.log(selectedMarker);
+  }, [galleriesMarker]);
 
   return (
     <div>
