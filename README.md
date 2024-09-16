@@ -148,7 +148,7 @@ EXHI_LOVER
 - 미디어 아트 선택 한 후<br/>
 ![스크린샷 2024-09-16 오후 6 25 57](https://github.com/user-attachments/assets/68f238ce-0d32-4df3-8b81-1f28fca30352)
 
-```jsx
+```JSX
 
   const TagsCheckBox = ({ title, items, handleCheckedItems, tags }) => {
   const [checkedItems, setCheckedItems] = useState([]);
@@ -221,140 +221,151 @@ EXHI_LOVER
 
 </details>
 
-<details><summary><b>Footer 미디어 쿼리 코드</b></summary>
+<details><summary><b>Kakao map api 전시관 marker 표시</b></summary>
 <br/>
 
+![스크린샷 2024-09-16 오후 6 54 00](https://github.com/user-attachments/assets/6469000f-c9cf-418b-b0b6-1ac080a14cc8)
 
-- Footer Icon을 정의하는 코드
+- Marker 표시 
 
 ```jsx
-const menus = [
-  { name: "홈", icon: StyledHomeIcon, path: "/main", id: "home" },
-  { name: "검색", icon: StyledSearchIcon, path: "/search", id: "search" },
-  { name: "채팅", icon: StyledChatIcon, path: "/chat", id: "chat" },
-  { name: "게시글 작성", icon: StyledWriteIcon, path: "/write", id: "write" },
-  {
-    name: "프로필",
-    icon: StyledProfileIcon,
-    path: `/profile/${myData.accountname}`,
-    id: "profile"
-  }
-];
+//MapTemplate.js
+const MapTemplate = () => {
+  const [state, setState] = useState({
+    center: {
+      lat: 37.56649,
+      lng: 126.978488,
+    },
+    errMsg: null,
+    isLoading: true,
+  });
 
-const getInitialActive = () => {
-  const matchedMenu = menus.find((menu) =>
-    location.pathname.startsWith(menu.path)
-  );
-  return matchedMenu ? matchedMenu.id : "profile";
-};
+  const { positions, isLoading: markersLoading } = Marker(); // Marker에서 로딩 상태와 positions을 받음
 
-const [$active, setActive] = useState(getInitialActive);
+  const [flag, setFlag] = useState(false); // true -> marker 활성화 (위치 활성화를 하지 않으면 no marker)
 
-return (
-  <S.FooterContainer>
-    {menus.map((menu) => {
-      const Icon = menu.icon;
-      return (
-        <S.Item
-          id={menu.id}
-          key={menu.id}
-          onClick={() => {
-            setActive(menu.id);
-            navigate(menu.path);
-          }}
-          $active={$active === menu.id}>
-          <Icon $active={$active === menu.id} />
-          <span>{menu.name}</span>
-        </S.Item>
+  useEffect(() => {
+    if (navigator.geolocation) {
+      // GeoLocation을 이용해서 접속 위치를 얻어옵니다
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setState((prev) => ({
+            ...prev,
+            center: {
+              lat: position.coords.latitude, // 위도
+              lng: position.coords.longitude, // 경도
+            },
+            isLoading: false,
+          }));
+        },
+        (err) => {
+          setState((prev) => ({
+            ...prev,
+            errMsg: err.message,
+            isLoading: false,
+          }));
+        }
       );
-    })}
-  </S.FooterContainer>
+    } else {
+      // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
+      setState((prev) => ({
+        ...prev,
+        errMsg: "geolocation을 사용할수 없어요..",
+        isLoading: false,
+      }));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!state.isLoading && !markersLoading) {
+      setFlag(true); // 모든 로딩이 완료되었을 때 flag를 true로 설정
+    }
+  }, [state.isLoading, markersLoading]);
+  if (!flag) {
+    return (
+      <>
+        <div>loading...</div>
+      </>
+    );
+  }
+```
+
+```jsx
+//Marker.js
+import { useQuery } from "@tanstack/react-query";
+import { fetchGalleryLocation } from "../../lib/api/Api";
+
+function Marker() {
+  const {
+    data: galleries,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["galleries"],
+    queryFn: fetchGalleryLocation,
+  });
+
+  const positions = galleries
+    ? galleries.map((gallery) => ({
+        id: gallery.id,
+        title: gallery.gallery_name,
+        latlng: {
+          lat: parseFloat(gallery.gallery_add_tude.split(",")[1]),
+          lng: parseFloat(gallery.gallery_add_tude.split(",")[0]),
+        },
+        add: gallery.gallery_add_word,
+        contact: gallery.gallery_phone_num,
+        url: gallery.site,
+        onDisplay: gallery.on_display,
+      }))
+    : [];
+
+  return { positions, isLoading, error }; // positions, 로딩 상태, 에러 반환
+}
+
+export default Marker;
+
+```
+
+</details>
+
+<details><summary><b>Zustand localStorage 저장</b></summary>
+<br/>
+![스크린샷 2024-09-16 오후 6 59 49](https://github.com/user-attachments/assets/bd4c1fc7-3433-4e9c-b4b1-ec7f1307df6d)
+
+- 필요한 정보만 localstorage에 저장
+
+```jsx
+//bearsStore.js
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+
+const useBearsStore = create(
+  persist(
+    (set) => ({
+      menuValue: "0",
+      setMenuValue: (value) => set({ menuValue: value }),
+      buttonValue: 0,
+      setButtonValue: (value) => set({ buttonValue: value }),
+      lastClickedMarker: {
+        lat: 0,
+        lng: 0,
+      },
+      setLastClickedMarker: (lat, lng) =>
+        set({ lastClickedMarker: { lat, lng } }),
+    }),
+    {
+      name: "bears-storage",
+      partialize: (state) => ({
+        menuValue: state.menuValue,
+        buttonValue: state.buttonValue,
+      }),
+    }
+  )
 );
-```
 
-- 화면 너비에 따라 Footer의 위치를 변경해주는 FooterContainer 코드
+export default useBearsStore;
 
-```jsx
-export const FooterContainer = styled.footer`
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  background-color: #25282d;
-
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100vw;
-  z-index: 900;
-  border-top: 1px solid #5c5c5c;
-
-  @media screen and (min-width: 768px) {
-    left: 0;
-    width: 72px;
-    height: calc(100vh - 55px);
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    gap: 20px;
-  }
-`;
-```
-
-- 화면 너비에 따라 Footer Icon을 배치
-
-```jsx
-export const Item = styled.button`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 12px 10px 6px 10px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: ${({ $active }) => ($active ? "#5865F2" : "#a4a4a4ff")};
-
-  &:hover {
-    transform: scale(1.2);
-  }
-  @media screen and (max-width: 767px) {
-    ${({ id }) =>
-      id === "search" &&
-      `
-        display: none;
-      `}
-  }
-
-  @media screen and (min-width: 768px) {
-    font-size: 0px;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-    height: auto;
-    padding: 50px 0 0 23px;
-    position: relative;
-
-    span {
-      position: absolute;
-      top: 85%;
-      left: 100%;
-      transform: translateY(-50%);
-      opacity: 0;
-      background: var(--color-purple);
-      color: white;
-      border-radius: 4px;
-      padding: 4px 8px;
-      font-size: 12px;
-      white-space: nowrap;
-      transition: opacity 0.3s ease-in-out;
-      box-shadow: 0px 0px 8px #ffffff90;
-    }
-
-    &:hover span {
-      opacity: 1;
-    }
-  }
-`;
 ```
 
 </details>
