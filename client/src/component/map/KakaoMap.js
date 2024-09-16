@@ -4,6 +4,7 @@ import icon from "../../lib/icon/loc.png";
 import iconDark from "../../lib/icon/dot.png";
 import SwipeableEdgeDrawer from "./SwipeableEdgeDrawer";
 import FetchShowTags from "./FetchShowTags";
+import useBearsStore from "../../lib/zustand/bearsStore";
 
 function KakaoMap({ lat, lng, flag, galleriesMarker }) {
   const mapHeight = (window.innerWidth >= 560 ? 560 : window.innerWidth) * 1.1;
@@ -11,7 +12,8 @@ function KakaoMap({ lat, lng, flag, galleriesMarker }) {
 
   const [selectedMarker, setSelectedMarker] = useState(null);
   const [drawerOpen, setDrawerOpen] = useState(false); // Add a state variable for drawer visibility
-  const [lastestClickedMarker, setLastestClickedMarker] = useState(null);
+
+  const { lastClickedMarker, setLastClickedMarker } = useBearsStore();
 
   const imageSize = new window.kakao.maps.Size(35, 35);
   const darkImageSize = new window.kakao.maps.Size(16, 16);
@@ -29,19 +31,23 @@ function KakaoMap({ lat, lng, flag, galleriesMarker }) {
   useEffect(() => {
     const map = new window.kakao.maps.Map(mapContainer.current, mapOptions);
 
-    const storedLastClickedMarker = localStorage.getItem("lastClickedMarker");
-    const initialLastClickedMarker = storedLastClickedMarker
-      ? JSON.parse(storedLastClickedMarker)
-      : null;
-
-    setLastestClickedMarker(
-      initialLastClickedMarker
-        ? new window.kakao.maps.LatLng(
-            initialLastClickedMarker.lat,
-            initialLastClickedMarker.lng
-          )
-        : null
-    );
+    if (lastClickedMarker.lat !== 0 && lastClickedMarker.lng !== 0) {
+      map.panTo(
+        new window.kakao.maps.LatLng(
+          lastClickedMarker.lat,
+          lastClickedMarker.lng
+        )
+      );
+    } else {
+      // 첫 접속 시 사용자의 현재 위치로 이동
+      if (flag) {
+        const markerPosition = new window.kakao.maps.LatLng(lat, lng);
+        const marker = new window.kakao.maps.Marker({
+          map: map,
+          position: markerPosition,
+        });
+      }
+    }
 
     // 내위치 알려주는 마커.
     if (flag) {
@@ -50,10 +56,6 @@ function KakaoMap({ lat, lng, flag, galleriesMarker }) {
         map: map,
         position: markerPosition,
       });
-    }
-
-    if (lastestClickedMarker) {
-      map.panTo(lastestClickedMarker);
     }
 
     galleriesMarker.forEach((galleryMarker) => {
@@ -76,13 +78,9 @@ function KakaoMap({ lat, lng, flag, galleriesMarker }) {
           });
 
           setSelectedMarker(galleryMarker);
-          setLastestClickedMarker(setGalleryMarker.getPosition());
-          localStorage.setItem(
-            "lastClickedMarker",
-            JSON.stringify({
-              lat: setGalleryMarker.getPosition().getLat(),
-              lng: setGalleryMarker.getPosition().getLng(),
-            })
+          setLastClickedMarker(
+            setGalleryMarker.getPosition().getLat(),
+            setGalleryMarker.getPosition().getLng()
           );
           setDrawerOpen(true);
         });
@@ -105,13 +103,9 @@ function KakaoMap({ lat, lng, flag, galleriesMarker }) {
               behavior: "smooth",
             });
             setSelectedMarker(galleryMarker);
-            setLastestClickedMarker(setGalleryMarker.getPosition());
-            localStorage.setItem(
-              "lastClickedMarker",
-              JSON.stringify({
-                lat: setGalleryMarker.getPosition().getLat(),
-                lng: setGalleryMarker.getPosition().getLng(),
-              })
+            setLastClickedMarker(
+              setGalleryMarker.getPosition().getLat(),
+              setGalleryMarker.getPosition().getLng()
             );
             setDrawerOpen(true);
           }

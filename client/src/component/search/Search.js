@@ -4,13 +4,13 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useQuery } from "@tanstack/react-query"; // Tanstack Query를 사용하기 위해 추가
-
 import PostTemplate from "../post/PostTemplate";
 import SearchBar from "../button/SearchBar";
 import styled from "styled-components";
 import HorizontalLine from "../layout/HorizontalLine";
 import { fetchShowsbySearchQuery } from "../../lib/api/Api"; // 서버 데이터를 가져오는 함수
-import PostSkeleton from "../post/PostSkeleton";
+import PostSkeleton from "../post/PostSkeleton"; // Zustand store import
+import useBearsStore from "../../lib/zustand/bearsStore";
 
 const SearchContainer = styled.div`
   display: flex;
@@ -29,7 +29,7 @@ const ShowContent = styled.div`
 const NoneShow = styled.div`
   color: white;
   padding-left: 0.8rem;
-  height: 400px;
+  height: 600px;
   p {
     margin: 0;
     margin-bottom: 0.4rem;
@@ -52,8 +52,9 @@ const darkTheme = createTheme({
 function Search() {
   const [paginationValue, setPaginationValue] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedValue, setSelectedValue] = useState("1");
   const initialLoadRef = useRef(true);
+
+  const { menuValue, setMenuValue } = useBearsStore(); // Access Zustand store
 
   const onSearch = useCallback(
     (searchString) => setSearchQuery(searchString),
@@ -66,10 +67,11 @@ function Search() {
     error,
     isLoading,
   } = useQuery({
-    queryKey: ["shows", searchQuery, selectedValue, paginationValue],
+    queryKey: ["shows", searchQuery, menuValue, paginationValue],
     queryFn: () =>
-      fetchShowsbySearchQuery(searchQuery, selectedValue, paginationValue),
+      fetchShowsbySearchQuery(searchQuery, menuValue, paginationValue),
     keepPreviousData: true, // 추가적인 옵션을 여기에 넣을 수 있습니다.
+    staleTime: 1000 * 5,
   });
   // 페이지 카운트를 계산합니다.
   const pageCount = showsData ? Math.ceil(showsData.totalCount / 10) : 1;
@@ -77,7 +79,7 @@ function Search() {
   // 페이징 변화 시 스크롤 조정
   React.useEffect(() => {
     if (!initialLoadRef.current) {
-      let location = document.querySelector("#Exhi").offsetTop;
+      let location = document.querySelector("#Art").offsetTop;
       window.scrollTo({
         top: location - 20,
       });
@@ -85,6 +87,7 @@ function Search() {
       initialLoadRef.current = false;
     }
   }, [paginationValue]);
+
   // 데이터 로딩 중일 때
   if (isLoading) {
     return (
@@ -93,12 +96,12 @@ function Search() {
         <HorizontalLine key="horizontal-line" />
         <ThemeProvider theme={darkTheme}>
           <SearchContainer>
-            <ShowContent id="Exhi">Exhibitions</ShowContent>
+            <ShowContent id="Art">Exhibitions</ShowContent>
             <SelectArea>
               <FormControl>
                 <Select
-                  value={selectedValue}
-                  onChange={(event) => setSelectedValue(event.target.value)}
+                  value={menuValue}
+                  onChange={(event) => setMenuValue(event.target.value)}
                   size="small"
                   variant="outlined"
                   color="primary"
@@ -106,11 +109,10 @@ function Search() {
                     disableScrollLock: true, // 이 속성을 추가하여 스크롤 잠금 비활성화
                   }}
                 >
-                  <MenuItem value="1">최신순</MenuItem>
-                  {/* <MenuItem value="2">개최순</MenuItem> */}
-                  <MenuItem value="2">마감순</MenuItem>
-                  <MenuItem value="3">상설전</MenuItem>
-                  <MenuItem value="4">예정전시</MenuItem>
+                  <MenuItem value="0">최신순</MenuItem>
+                  <MenuItem value="1">마감순</MenuItem>
+                  <MenuItem value="2">상설전</MenuItem>
+                  <MenuItem value="3">예정전시</MenuItem>
                 </Select>
               </FormControl>
             </SelectArea>
@@ -133,8 +135,8 @@ function Search() {
             <SelectArea>
               <FormControl>
                 <Select
-                  value={selectedValue}
-                  onChange={(event) => setSelectedValue(event.target.value)}
+                  value={menuValue}
+                  onChange={(event) => setMenuValue(event.target.value)}
                   size="small"
                   variant="outlined"
                   color="primary"
@@ -142,11 +144,10 @@ function Search() {
                     disableScrollLock: true, // 이 속성을 추가하여 스크롤 잠금 비활성화
                   }}
                 >
-                  <MenuItem value="1">최신순</MenuItem>
-                  {/* <MenuItem value="2">개최순</MenuItem> */}
-                  <MenuItem value="2">마감순</MenuItem>
-                  <MenuItem value="3">상설전</MenuItem>
-                  <MenuItem value="4">예정전시</MenuItem>
+                  <MenuItem value="0">최신순</MenuItem>
+                  <MenuItem value="1">마감순</MenuItem>
+                  <MenuItem value="2">상설전</MenuItem>
+                  <MenuItem value="3">예정전시</MenuItem>
                 </Select>
               </FormControl>
             </SelectArea>
@@ -154,6 +155,10 @@ function Search() {
         </ThemeProvider>
         <NoneShow>
           <p>ERROR!</p>
+          <p>페이지 맨 아래 MADE BY EXHI-LOVER를</p>
+          <p>눌러서 exhi_lover 계정으로</p>
+          <p>발생한 문제를 DM으로 제보해주시면</p>
+          <p>정말 감사하겠습니다.</p>
         </NoneShow>
       </>
     );
@@ -171,8 +176,8 @@ function Search() {
             <SelectArea>
               <FormControl>
                 <Select
-                  value={selectedValue}
-                  onChange={(event) => setSelectedValue(event.target.value)}
+                  value={menuValue}
+                  onChange={(event) => setMenuValue(event.target.value)}
                   size="small"
                   variant="outlined"
                   color="primary"
@@ -180,11 +185,10 @@ function Search() {
                     disableScrollLock: true, // 이 속성을 추가하여 스크롤 잠금 비활성화
                   }}
                 >
-                  <MenuItem value="1">최신순</MenuItem>
-                  {/* <MenuItem value="2">개최순</MenuItem> */}
-                  <MenuItem value="2">마감순</MenuItem>
-                  <MenuItem value="3">상설전</MenuItem>
-                  <MenuItem value="4">예정전시</MenuItem>
+                  <MenuItem value="0">최신순</MenuItem>
+                  <MenuItem value="1">마감순</MenuItem>
+                  <MenuItem value="2">상설전</MenuItem>
+                  <MenuItem value="3">예정전시</MenuItem>
                 </Select>
               </FormControl>
             </SelectArea>
@@ -209,8 +213,8 @@ function Search() {
           <SelectArea>
             <FormControl>
               <Select
-                value={selectedValue}
-                onChange={(event) => setSelectedValue(event.target.value)}
+                value={menuValue}
+                onChange={(event) => setMenuValue(event.target.value)}
                 size="small"
                 variant="outlined"
                 color="primary"
@@ -219,11 +223,10 @@ function Search() {
                   disableScrollLock: true, // 이 속성을 추가하여 스크롤 잠금 비활성화
                 }}
               >
-                <MenuItem value="1">최신순</MenuItem>
-                {/* <MenuItem value="2">개최순</MenuItem> */}
-                <MenuItem value="2">마감순</MenuItem>
-                <MenuItem value="3">상설전</MenuItem>
-                <MenuItem value="4">예정전시</MenuItem>
+                <MenuItem value="0">최신순</MenuItem>
+                <MenuItem value="1">마감순</MenuItem>
+                <MenuItem value="2">상설전</MenuItem>
+                <MenuItem value="3">예정전시</MenuItem>
               </Select>
             </FormControl>
           </SelectArea>

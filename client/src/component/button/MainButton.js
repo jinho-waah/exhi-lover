@@ -7,6 +7,7 @@ import Search from "../search/Search";
 import MapTemplate from "../map/MapTemplate";
 import HashTagTemplate from "../hashtag/HashTagTemplate";
 import Footer from "../layout/Footer";
+import useBearsStore from "../../lib/zustand/bearsStore";
 
 const theme = createTheme({
   palette: {
@@ -19,23 +20,20 @@ const theme = createTheme({
 
 function MainButton() {
   // const [stat, changeStat] = useState(0);
-  const [stat, changeStat] = useState(() => {
-    const storedStat = localStorage.getItem("stat");
-    return storedStat !== null ? parseInt(storedStat) : 0;
-  });
-
-  useEffect(() => {
-    localStorage.setItem("stat", stat);
-  }, [stat]);
+  // const [stat, changeStat] = useState(() => {
+  //   const storedStat = localStorage.getItem("stat");
+  //   return storedStat !== null ? parseInt(storedStat) : 0;
+  // });
+  const { buttonValue, setButtonValue } = useBearsStore();
 
   const activateTextField = () => {
-    changeStat(0);
+    setButtonValue(0);
   };
   const activateHashTag = () => {
-    changeStat(1);
+    setButtonValue(1);
   };
   const activateMap = () => {
-    changeStat(2);
+    setButtonValue(2);
   };
   return (
     <div>
@@ -68,9 +66,9 @@ function MainButton() {
           </ButtonGroup>
         </ThemeProvider>
       </Box>
-      <div>{stat === 0 && <Search />}</div>
-      <div>{stat === 1 && <MapTemplate />} </div>
-      <div>{stat === 2 && <HashTagTemplate />}</div>
+      <div>{buttonValue === 0 && <Search />}</div>
+      <div>{buttonValue === 1 && <MapTemplate />} </div>
+      <div>{buttonValue === 2 && <HashTagTemplate />}</div>
     </div>
   );
 }
