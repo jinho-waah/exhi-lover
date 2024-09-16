@@ -140,8 +140,12 @@ EXHI_LOVER
 
 ## **4. 핵심 코드**
 
-<details><summary><b>활성화 되어 있는 해시태그를 선택하면 해당 관련 게시물만 필터링 되고 <br/> 
-	필터된 게시물에 해당하지 않는 해시 태그는 비활성화</b></summary>
+<details>
+  <summary>
+    <b>
+	활성화 되어 있는 해시태그를 선택하면 해당 관련 게시물만 필터링 된 후, 필터된 게시물에 해당하지 않는 해시 태그는 비활성화
+    </b>
+  </summary>
 
 - 미디어 아트 선택하기 전<br/>
 ![스크린샷 2024-09-16 오후 6 25 39](https://github.com/user-attachments/assets/1785fe59-99bc-4a08-ad8b-7c0bad4475b7)
