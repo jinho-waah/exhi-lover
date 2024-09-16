@@ -429,16 +429,16 @@ function Search() {
 
 <b style="font-size:17px">문제</b><br/>
 
-Browser에서 Refresh를 하면 중요 state 값이 default로 돌아오는 문제 발생 
+- Browser에서 Refresh를 하면 중요 state 값이 default로 돌아오는 문제 발생 
 
 <b style="font-size:17px">해결</b><br/>
 
-(해결 과정 중 발생한 문제) 
-- Zustand로 상태 관리 하고 persist의 getStorage를 활용<br/>
-- localStorage에 원하지 않는 정보도 저장 되는 문제 발생<br/>
+- (해결 과정 중 발생한 문제) 
+	- Zustand로 상태 관리 하고 persist의 getStorage를 활용<br/>
+	- localStorage에 원하지 않는 정보도 저장 되는 문제 발생<br/>
 
-(해결)
-- getStorage 대신 partialize를 이용하여 원하는 state만 저장 <br/>
+- (해결)
+	- getStorage 대신 partialize를 이용하여 원하는 state만 저장 <br/>
 
 
 <br/>
