@@ -4,10 +4,10 @@
 
 ![스크린샷 2024-09-16 오후 6 21 25](https://github.com/user-attachments/assets/717a97f0-dc62-49ec-9b1d-cd105cbee2c3)
 
-> Exhi-lover는 전시회를 손쉽게 검색 할 수 있는 입니다.<br/>
-> Frontend by 조진호
-> Backend by 조진호
-> Designed by 조진호
+> Art-lover는 전시회를 손쉽게 검색 할 수 있는 입니다.<br/>
+> Frontend by 조진호<br/>
+> Backend by 조진호 <br/>
+> Designed by 조진호 <br/>
 [Art-Lover URL](https://art-lover.co.kr)<br/>
                                                                
 ## **2. 개발 환경 & 핵심 기술 설명**
@@ -140,7 +140,8 @@ EXHI_LOVER
 
 ## **4. 핵심 코드**
 
-<details><summary><b>해시태그를 선택하면 해당 관련 게시물만 뜨게 되면 해당 게시물에 해당하지 않는 해시 태그는 비활성화</b></summary>
+<details><summary><b>활성화 되어 있는 해시태그를 선택하면 해당 관련 게시물만 필터링 되고 <br/> 
+	필터된 게시물에 해당하지 않는 해시 태그는 비활성화</b></summary>
 
 - 미디어 아트 선택하기 전<br/>
 ![스크린샷 2024-09-16 오후 6 25 39](https://github.com/user-attachments/assets/1785fe59-99bc-4a08-ad8b-7c0bad4475b7)
@@ -331,6 +332,7 @@ export default Marker;
 
 <details><summary><b>Zustand localStorage 저장</b></summary>
 <br/>
+	
 ![스크린샷 2024-09-16 오후 6 59 49](https://github.com/user-attachments/assets/bd4c1fc7-3433-4e9c-b4b1-ec7f1307df6d)
 
 - 필요한 정보만 localstorage에 저장
@@ -370,11 +372,60 @@ export default useBearsStore;
 
 </details>
 
+<details><summary><b>Tanstack Query를 이용하여 검색 api 관리</b></summary>
+<br/>
+
+![스크린샷 2024-09-16 오후 7 16 00](https://github.com/user-attachments/assets/ef282666-2866-4950-9b25-c6261ee5abc2)
+
+
+```jsx
+function Search() {
+  const [paginationValue, setPaginationValue] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
+  const initialLoadRef = useRef(true);
+
+  const { menuValue, setMenuValue } = useBearsStore(); // Access Zustand store
+
+  const onSearch = useCallback(
+    (searchString) => setSearchQuery(searchString),
+    []
+  );
+
+  // Tanstack Query 사용
+  const {
+    data: showsData,
+    error,
+    isLoading,
+  } = useQuery({
+    queryKey: ["shows", searchQuery, menuValue, paginationValue],
+    queryFn: () =>
+      fetchShowsbySearchQuery(searchQuery, menuValue, paginationValue),
+    keepPreviousData: true, // 추가적인 옵션을 여기에 넣을 수 있습니다.
+    staleTime: 1000 * 5,
+  });
+  // 페이지 카운트를 계산합니다.
+  const pageCount = showsData ? Math.ceil(showsData.totalCount / 10) : 1;
+
+  // 페이징 변화 시 스크롤 조정
+  React.useEffect(() => {
+    if (!initialLoadRef.current) {
+      let location = document.querySelector("#Art").offsetTop;
+      window.scrollTo({
+        top: location - 20,
+      });
+    } else {
+      initialLoadRef.current = false;
+    }
+  }, [paginationValue]);
+```
+
+</details>
+
 ## **5. 트러블 슈팅**
 
 <b style="font-size:17px">문제</b><br/>
 
-Browser에서 Refresh를 하면 선택한 검색 방식이 default로 돌아오는 문제 발생 
+Browser에서 Refresh를 하면 중요 state 값이 default로 돌아오는 문제 발생 
 
 <b style="font-size:17px">해결</b><br/>
 
@@ -383,7 +434,7 @@ Browser에서 Refresh를 하면 선택한 검색 방식이 default로 돌아오�
 - localStorage에 원하지 않는 정보도 저장 되는 문제 발생<br/>
 
 (해결)
-- partialize를 이용하여 원하는 state만 저장 <br/>
+- getStorage 대신 partialize를 이용하여 원하는 state만 저장 <br/>
 
 
 <br/>
