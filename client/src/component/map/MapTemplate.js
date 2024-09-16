@@ -1,11 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import { useMemo } from "react";
 import { useEffect, useState } from "react";
 import KakaoMap from "./KaKaoMap";
 import Marker from "./Marker";
-import { useQuery } from "@tanstack/react-query";
-import { fetchGalleryLocation } from "../../lib/api/Api";
 
 const MapBox = styled.div`
   width: 100%;
@@ -94,13 +91,15 @@ const MapTemplate = () => {
   }
   return (
     <MapBox>
-      {flag && (
+      {flag ? (
         <KakaoMap
           lat={state.center.lat}
           lng={state.center.lng}
           flag={flag} // showMarker에 flag 값 전달
           galleriesMarker={positions} // 갤러리 마커 데이터 전달
         />
+      ) : (
+        <>loading</>
       )}
     </MapBox>
   );
