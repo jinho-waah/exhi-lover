@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import Box from "@mui/material/Box";
@@ -6,14 +6,18 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Search from "../search/Search";
 import MapTemplate from "../map/MapTemplate";
 import HashTagTemplate from "../hashtag/HashTagTemplate";
-import Footer from "../layout/Footer";
 import useBearsStore from "../../lib/zustand/bearsStore";
 
 const theme = createTheme({
   palette: {
-    white: {
+    common: {
+      white: {
+        main: "#ffffff",
+        contrastText: "#ffffff",
+      },
+    },
+    error: {
       main: "#ffffff",
-      contrastText: "#ffffff",
     },
   },
 });
@@ -49,15 +53,22 @@ function MainButton() {
             size="large"
             variant="text"
             aria-label="text button group"
-            color="white"
+            color="error"
             sx={{
-              // paddingRight: "25px",
-              paddingTop: "40px",
+              paddingTop: "30px",
+              paddingBottom: "20px",
+              color: "white",
             }}
           >
-            <Button onClick={activateTextField}>Search</Button>
-            <Button onClick={activateHashTag}>Map</Button>
-            <Button onClick={activateMap}>HashTag</Button>
+            <Button sx={{ color: "white" }} onClick={activateTextField}>
+              Search
+            </Button>
+            <Button sx={{ color: "white" }} onClick={activateHashTag}>
+              Map
+            </Button>
+            <Button sx={{ color: "white" }} onClick={activateMap}>
+              HashTag
+            </Button>
           </ButtonGroup>
         </ThemeProvider>
       </Box>

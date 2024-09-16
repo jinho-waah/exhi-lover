@@ -22,6 +22,21 @@ const MapBox = styled.div`
   }
 `;
 
+const Waiting = styled.div`
+  width: 100%;
+  align-items: center;
+  margin: 0;
+
+  @media (max-width: 560px) {
+    height: calc(110vw + 50px);
+  }
+
+  @media (min-width: 561px) {
+    // height: 616px;
+    height: 666px;
+  }
+`;
+
 const MapTemplate = () => {
   const [state, setState] = useState({
     center: {
@@ -73,12 +88,9 @@ const MapTemplate = () => {
       setFlag(true); // 모든 로딩이 완료되었을 때 flag를 true로 설정
     }
   }, [state.isLoading, markersLoading]);
-  if (!flag) {
-    return (
-      <>
-        <div>loading...</div>
-      </>
-    );
+
+  if (state.isLoading) {
+    return <Waiting>loading...</Waiting>;
   }
   return (
     <MapBox>

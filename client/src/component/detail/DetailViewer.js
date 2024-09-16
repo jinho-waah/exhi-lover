@@ -422,13 +422,38 @@ const DetailViewer = ({ show, color, tags }) => {
     slidesToScroll: 1,
   };
 
+  // const handleCopyClipBoard = async (text) => {
+  //   try {
+  //     await navigator.clipboard.writeText(text);
+
+  //     alert("url 복사 되었습니다");
+  //   } catch (error) {
+  //     alert("url 복사 실패 했습니다");
+  //   }
+  // };
   const handleCopyClipBoard = async (text) => {
     try {
-      await navigator.clipboard.writeText(text);
+      if (navigator.clipboard && window.isSecureContext) {
+        // 클립보드 API 사용
+        await navigator.clipboard.writeText(text);
+        alert("URL이 클립보드에 복사되었습니다.");
+      } else {
+        // HTTPS가 아니거나 클립보드 API를 지원하지 않는 경우
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        // 텍스트 영역을 화면에 표시하지 않음
+        textArea.style.position = "fixed";
+        textArea.style.left = "-9999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
 
-      alert("url 복사 되었습니다");
+        document.execCommand("copy");
+        document.body.removeChild(textArea);
+        alert("URL이 클립보드에 복사되었습니다.");
+      }
     } catch (error) {
-      alert("url 복사 실패 했습니다");
+      alert("URL 복사에 실패했습니다.");
     }
   };
 
