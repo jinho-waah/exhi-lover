@@ -100,6 +100,7 @@ function MainPage({ val }) {
   const splitQuote = quotes[randomIndex].split("-");
   // const splitQuote2 = quotes[randomIndex2].split("-");
   // const splitKoreanQuote = quotesKorean[randomIndex].split("-");
+
   return (
     <>
       <GlobalStyle />

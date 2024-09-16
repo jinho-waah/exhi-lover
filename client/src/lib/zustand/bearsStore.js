@@ -6,7 +6,7 @@ const useBearsStore = create(
     (set) => ({
       menuValue: "0",
       setMenuValue: (value) => set({ menuValue: value }),
-      buttonValue: "0",
+      buttonValue: 0,
       setButtonValue: (value) => set({ buttonValue: value }),
       lastClickedMarker: {
         lat: 0,

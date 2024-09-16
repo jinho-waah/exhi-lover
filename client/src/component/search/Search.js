@@ -131,7 +131,7 @@ function Search() {
         <HorizontalLine key="horizontal-line" />
         <ThemeProvider theme={darkTheme}>
           <SearchContainer>
-            <ShowContent id="Exhi">Exhibitions</ShowContent>
+            <ShowContent id="Art">Exhibitions</ShowContent>
             <SelectArea>
               <FormControl>
                 <Select
@@ -172,7 +172,7 @@ function Search() {
         <HorizontalLine key="horizontal-line" />
         <ThemeProvider theme={darkTheme}>
           <SearchContainer>
-            <ShowContent id="Exhi">Exhibitions</ShowContent>
+            <ShowContent id="Art">Exhibitions</ShowContent>
             <SelectArea>
               <FormControl>
                 <Select
@@ -209,7 +209,7 @@ function Search() {
       <HorizontalLine key="horizontal-line" />
       <ThemeProvider theme={darkTheme}>
         <SearchContainer>
-          <ShowContent id="Exhi">Exhibitions</ShowContent>
+          <ShowContent id="Art">Exhibitions</ShowContent>
           <SelectArea>
             <FormControl>
               <Select

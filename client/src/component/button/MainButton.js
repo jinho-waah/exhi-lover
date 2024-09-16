@@ -19,11 +19,6 @@ const theme = createTheme({
 });
 
 function MainButton() {
-  // const [stat, changeStat] = useState(0);
-  // const [stat, changeStat] = useState(() => {
-  //   const storedStat = localStorage.getItem("stat");
-  //   return storedStat !== null ? parseInt(storedStat) : 0;
-  // });
   const { buttonValue, setButtonValue } = useBearsStore();
 
   const activateTextField = () => {
