@@ -1,11 +1,13 @@
 <h1 align='center'><b>Art-Lover</b></h1>
 
-## **1. Exhi-lover 소개**
+## **1. Art-lover 소개**
 
-![스크린샷 2024-09-14 오후 4 32 51](https://github.com/user-attachments/assets/f4e1dbce-3937-4f17-8d76-36b096d008ef)
+![스크린샷 2024-09-16 오후 6 21 25](https://github.com/user-attachments/assets/717a97f0-dc62-49ec-9b1d-cd105cbee2c3)
 
 > Exhi-lover는 전시회를 손쉽게 검색 할 수 있는 입니다.<br/>
-> 조진호의 solo project 입니다. 
+> Frontend by 조진호
+> Backend by 조진호
+> Designed by 조진호
 [Art-Lover URL](https://art-lover.co.kr)<br/>
                                                                
 ## **2. 개발 환경 & 핵심 기술 설명**
@@ -53,6 +55,7 @@
 | Styled-components |    props나 상태에 따라 동적으로 스타일을 변경할 수 있기에 사용      |
 |  Tanstack Query | 서버 데이터의 상태를 효율적으로 관리하고, 캐시와 자동 리페칭으로 사용자 경험을 개선하기 위해 사용  |
 | Zustand  | 클라이언트가 주력으로 이용할 state가 많지 않아 효율적으로 관리할 수 있는 zustand 채택 |
+| Kakao map api  | 사용자 편의성과 로딩시간, 검색시간이 중요하다고 판단하여  kakao map api 를 사용  |
 
 
 
@@ -137,48 +140,83 @@ EXHI_LOVER
 
 ## **4. 핵심 코드**
 
-<details><summary><b>게임 모집 수정 API 커스텀 코드</b></summary>
+<details><summary><b>해시태그를 선택하면 해당 관련 게시물만 뜨게 되면 해당 게시물에 해당하지 않는 해시 태그는 비활성화</b></summary>
 
-- API 요청 시, 객체를 JSON으로 변환하여 데이터 등록
+- 미디어 아트 선택하기 전<br/>
+![스크린샷 2024-09-16 오후 6 25 39](https://github.com/user-attachments/assets/1785fe59-99bc-4a08-ad8b-7c0bad4475b7)
 
-```jsx
-import axios from "axios";
-import masterTokenAPI from "../masterTokenAPI";
+- 미디어 아트 선택 한 후<br/>
+![스크린샷 2024-09-16 오후 6 25 57](https://github.com/user-attachments/assets/68f238ce-0d32-4df3-8b81-1f28fca30352)
 
-async function gameRecruitAPI(
-  gameTitle,
-  people,
-  detail,
-  itemImage = "",
-  accountName
-) {
-  try {
-    const token = await masterTokenAPI();
+```jsx
 
-    const itemName = [gameTitle, accountName];
-    const link = [people, detail, [accountName]];
+  const TagsCheckBox = ({ title, items, handleCheckedItems, tags }) => {
+  const [checkedItems, setCheckedItems] = useState([]);
+  const [disableTagIds, setDisableTagIds] = useState([]);
+  const [error, setError] = useState(null);
 
-    const response = await axios.post(
-      "https://api.mandarin.weniv.co.kr/product",
-      {
-        product: {
-          itemName: JSON.stringify(itemName),
-          price: 1,
-          link: JSON.stringify(link),
-          itemImage: itemImage
+  const objectKeys = Object.keys(items); // string, object의 앞
+  const valueKeys = Object.values(items); // int, object의 뒤
+
+  useEffect(() => {
+    handleCheckedItems(checkedItems);
+  }, [handleCheckedItems, checkedItems]);
+
+  useEffect(() => {
+    const fetchTagId = async () => {
+      try {
+        if (tags !== null) {
+          setError(null);
+          const TagIds = tags.map((obj) => obj.tag_id);
+          const filteredDisableTagIds = valueKeys.filter(
+            (element) => !TagIds.includes(element)
+          );
+          setDisableTagIds(filteredDisableTagIds);
         }
-      },
-      {
-        headers: { Authorization: `Bearer ${token}` }
+      } catch (e) {
+        setError(e);
       }
-    );
-    return "게임 모집글 게시되었습니다!";
-  } catch (e) {
-    return false;
-  }
-}
+    };
 
-export default gameRecruitAPI;
+    fetchTagId();
+  }, [tags]);
+
+  const handleItemClick = (index) => {
+    if (checkedItems.includes(index)) {
+      setCheckedItems((val) => val.filter((text) => text !== index));
+    } else {
+      setCheckedItems((val) => [...val, index]);
+    }
+  };
+
+  const handleReset = () => {
+    setCheckedItems([]);
+  };
+
+  return (
+    <Box>
+      <p>
+        {title}
+        <button onClick={handleReset}>선택 초기화</button>
+      </p>
+      <br />
+      <Container>
+        {objectKeys.map((item) => (
+          <Item
+            key={items[item]}
+            checked={checkedItems.includes(items[item])}
+            onClick={() => handleItemClick(items[item])}
+            disable={disableTagIds.includes(items[item])}
+          >
+            {checkedItems.includes(item) && <Done />}
+            {item}
+          </Item>
+        ))}
+      </Container>
+    </Box>
+  );
+};
+
 ```
 
 </details>
@@ -186,10 +224,6 @@ export default gameRecruitAPI;
 <details><summary><b>Footer 미디어 쿼리 코드</b></summary>
 <br/>
 
-|                                                        웹 반응형                                                         |
-| :----------------------------------------------------------------------------------------------------------------------: |
-|  ![웹_메인](https://github.com/FRONTENDSCHOOL7/final-10-GameBuddy/assets/62794884/2a7d25de-874d-4426-a7bb-d1f8a6a97521)  |
-| ![웹_게시글](https://github.com/FRONTENDSCHOOL7/final-10-GameBuddy/assets/62794884/efe7d5cd-21a6-4326-9f1b-67601565524c) |
 
 - Footer Icon을 정의하는 코드
 
@@ -333,7 +367,12 @@ Browser에서 Refresh를 하면 선택한 검색 방식이 default로 돌아오�
 
 <b style="font-size:17px">해결</b><br/>
 
-localstorage를 활용하여 selectedValue를 로컬 저장소에 저장하여 사용자의 검색 옵션을 기억하고 유지
+(해결 과정 중 발생한 문제) 
+- Zustand로 상태 관리 하고 persist의 getStorage를 활용<br/>
+- localStorage에 원하지 않는 정보도 저장 되는 문제 발생<br/>
+
+(해결)
+- partialize를 이용하여 원하는 state만 저장 <br/>
 
 
 <br/>
