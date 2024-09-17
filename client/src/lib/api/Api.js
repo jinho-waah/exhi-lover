@@ -1,6 +1,6 @@
 import axios from "axios";
-// const mainUrl = "http://localhost:5100";
-const mainUrl = "https://art-lover.co.kr";
+const mainUrl = "http://localhost:5100";
+// const mainUrl = "https://art-lover.co.kr";
 
 // default () => shows
 export const fetchAllShows = async () => {

@@ -122,6 +122,7 @@ function KakaoMap({ lat, lng, flag, galleriesMarker }) {
           maxWidth: "560px",
           height: `${mapHeight + 50}px`,
           position: "absolute",
+          overflow: "hidden",
         }}
       >
         <div
@@ -139,6 +140,7 @@ function KakaoMap({ lat, lng, flag, galleriesMarker }) {
             onClose={() => {
               setDrawerOpen(false);
             }}
+            drawerOpen={drawerOpen}
           />
         ) : (
           <SwipeableEdgeDrawer />

@@ -1,8 +1,26 @@
 import React from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { useEffect, useState } from "react";
 import KakaoMap from "./KaKaoMap";
 import Marker from "./Marker";
+import { Box, Skeleton, Typography } from "@mui/material";
+
+// 깜박이는 애니메이션 정의
+const blinkAnimation = keyframes`
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+`;
+
+const AnimatedTypography = styled(Typography)`
+  animation: ${blinkAnimation} 1.5s infinite ease-in-out;
+`;
 
 const MapBox = styled.div`
   width: 100%;
@@ -14,22 +32,6 @@ const MapBox = styled.div`
   }
 
   @media (min-width: 561px) {
-    // height: 616px;
-    height: 666px;
-  }
-`;
-
-const Waiting = styled.div`
-  width: 100%;
-  align-items: center;
-  margin: 0;
-
-  @media (max-width: 560px) {
-    height: calc(110vw + 50px);
-  }
-
-  @media (min-width: 561px) {
-    // height: 616px;
     height: 666px;
   }
 `;
@@ -50,7 +52,6 @@ const MapTemplate = () => {
 
   useEffect(() => {
     if (navigator.geolocation) {
-      // GeoLocation을 이용해서 접속 위치를 얻어옵니다
       navigator.geolocation.getCurrentPosition(
         (position) => {
           setState((prev) => ({
@@ -71,7 +72,6 @@ const MapTemplate = () => {
         }
       );
     } else {
-      // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
       setState((prev) => ({
         ...prev,
         errMsg: "geolocation을 사용할수 없어요..",
@@ -86,9 +86,6 @@ const MapTemplate = () => {
     }
   }, [state.isLoading, markersLoading]);
 
-  if (state.isLoading) {
-    return <Waiting>loading...</Waiting>;
-  }
   return (
     <MapBox>
       {flag ? (
@@ -99,7 +96,42 @@ const MapTemplate = () => {
           galleriesMarker={positions} // 갤러리 마커 데이터 전달
         />
       ) : (
-        <>loading</>
+        <Box
+          sx={{
+            bgcolor: "#121212",
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "column",
+            position: "relative",
+            height:
+              (window.innerWidth >= 560 ? 560 : window.innerWidth * 1.1) + 50,
+          }}
+        >
+          <Skeleton
+            sx={{
+              bgcolor: "grey.900",
+              position: "absolute",
+              top: 0,
+              height: "100%",
+              width: "100%",
+            }}
+            variant="rectangular"
+          />
+          <AnimatedTypography
+            sx={{
+              position: "absolute",
+              color: "white",
+              fontSize: "20px",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+            }}
+          >
+            지도 생성중...!
+          </AnimatedTypography>
+        </Box>
       )}
     </MapBox>
   );

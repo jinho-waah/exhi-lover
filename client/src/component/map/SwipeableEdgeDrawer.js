@@ -7,23 +7,43 @@ import FetchShowsInfo from "./FetchShowsInfo";
 import FetchShowTags from "./FetchShowTags";
 import GlobalStyle from "../../lib/styles/fontStyle";
 
+// const Drawer = styled.div`
+//   position: absolute;
+//   display: flex;
+//   flex-direction: column; /* Stack elements vertically */
+//   justify-content: flex-start; /* Stick to the top */
+//   align-items: center; /* Center horizontally */
+//   padding-top: 10px;
+//   padding-right: 14px;
+//   padding-left: 14px;
+//   //   height: ${(props) => props.height}px;
+//   //   max-height: ${(props) => props.height}px;
+//   //   height: 200px;
+//   width: 100%;
+//   background: #1e1e1e;
+//   border-radius: 15px 15px 0 0;
+//   bottom: 0;
+//   z-index: 999;
+// `;
+
 const Drawer = styled.div`
   position: absolute;
   display: flex;
-  flex-direction: column; /* Stack elements vertically */
-  justify-content: flex-start; /* Stick to the top */
-  align-items: center; /* Center horizontally */
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
   padding-top: 10px;
   padding-right: 14px;
   padding-left: 14px;
-  //   height: ${(props) => props.height}px;
-  //   max-height: ${(props) => props.height}px;
-  //   height: 200px;
   width: 100%;
   background: #1e1e1e;
   border-radius: 15px 15px 0 0;
   bottom: 0;
   z-index: 999;
+
+  // Animation styles
+  transform: translateY(${(props) => (props.drawerOpen ? "0" : "100%")});
+  transition: transform 0.5s ease-in-out; // 0.5s for smooth transition
 `;
 
 const Container = styled.div`
@@ -140,7 +160,7 @@ const Inform = styled.div`
   }
 `;
 
-const SwipeableEdgeDrawer = ({ gallery, onClose }) => {
+const SwipeableEdgeDrawer = ({ gallery, onClose, drawerOpen }) => {
   const navigate = useNavigate();
   const galleryInfo = FetchShowsInfo(gallery?.id);
   const tags = FetchShowTags(galleryInfo);
@@ -156,7 +176,7 @@ const SwipeableEdgeDrawer = ({ gallery, onClose }) => {
   return (
     <>
       <GlobalStyle />
-      <Drawer>
+      <Drawer drawerOpen={drawerOpen}>
         {gallery ? (
           <Container>
             {gallery.title}
