@@ -1,10 +1,10 @@
-import React from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import DetailViewer from "./DetailViewer";
 import SubHeader from "../layout/SubHeader";
 import Footer from "../layout/Footer";
+import { useQuery } from "@tanstack/react-query"; // Tanstack Query v5 사용
 import {
   fetchShowByShowId,
   fetchShowTagsId,
@@ -23,93 +23,63 @@ const TemplateBlock = styled.div`
 
 const DetailTemplate = ({ color }) => {
   const { showId } = useParams();
-  const [show, setShow] = useState(null);
-  const [tags, setTags] = useState(null);
-  const [tagsId, setTagsId] = useState(null);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchShow = async () => {
-      try {
-        setError(null);
-        setShow(null);
-        const data = await fetchShowByShowId(showId);
-        setShow(data);
-      } catch (e) {
-        setError(e);
-      }
-    };
-    fetchShow();
+    window.scrollTo(0, 0); // 페이지가 로드될 때마다 스크롤 위치를 맨 위로 설정
   }, [showId]);
 
-  useEffect(() => {
-    const fetchTagsId = async () => {
-      try {
-        setError(null);
+    // Tanstack Query v5를 사용한 fetchShowByShowId
+    const {
+      data: show,
+      error: showError,
+      isLoading: showLoading,
+    } = useQuery({
+      queryKey: ["show", showId],
+      queryFn: () => fetchShowByShowId(showId),
+      staleTime: 60000, // 데이터가 1분 동안 신선하다고 간주
+    });
+
+    // show 데이터가 준비된 후에만 tagsId를 가져옴
+    const {
+      data: tagsId,
+      error: tagsIdError,
+      isLoading: tagsIdLoading,
+    } = useQuery({
+      queryKey: ["tagsId", showId],
+      queryFn: async () => {
         const tagsIdData = await Promise.all(
-          show.map(async (show) => {
-            const data = await fetchShowTagsId(show.id);
+          show.map(async (item) => {
+            const data = await fetchShowTagsId(item.id);
             return data;
           })
         );
-        if (tagsIdData.length > 0) {
-          const tagsIdArray = tagsIdData.reduce((acc, innerArray) => {
-            innerArray.forEach((row) => {
-              const { exhibition_id, tag_id } = row;
-              const index = acc.findIndex(
-                (obj) => obj.exhibition_id === exhibition_id
-              );
-              if (index === -1) {
-                acc.push({ exhibition_id, tags: [tag_id] });
-              } else {
-                acc[index].tags.push(tag_id);
-              }
-            });
-            return acc;
-          }, []);
-          setTagsId(tagsIdArray);
-        }
-      } catch (e) {
-        setError(e);
-      }
-    };
+        return tagsIdData;
+      },
+      enabled: !!show, // show가 로드된 후에만 실행
+    });
 
-    fetchTagsId();
-  }, [show]);
+  // tagsId 데이터가 준비된 후에만 tags를 가져옴
+  const {
+    data: tags,
+    error: tagsError,
+    isLoading: tagsLoading,
+  } = useQuery({
+    queryKey: ["tags", tagsId],
+    queryFn: async () => {
+      const tagData = await Promise.all(
+        tagsId.flat().map(async ({ tag_id }) => {
+          const data = await fetchTagName(tag_id);
+          return data;
+        })
+      );
+      return tagData;
+    },
+    enabled: !!tagsId, // tagsId가 로드된 후에만 실행
+  });
 
-  useEffect(() => {
-    const fetchTag = async () => {
-      try {
-        setError(null);
-        const tagData = await Promise.all(
-          tagsId.map(async ({ exhibition_id, tags }) => {
-            const tagNames = await Promise.all(
-              tags.map(async (tagId) => {
-                const data = await fetchTagName(tagId);
-                return data;
-              })
-            );
-            return { exhibition_id, tagNames };
-          })
-        );
-        setTags(
-          tagData.reduce((acc, { exhibition_id, tagNames }) => {
-            acc[exhibition_id] = tagNames;
-            return acc;
-          }, {})
-        );
-      } catch (e) {
-        setError(e);
-      }
-    };
+  if (showLoading || tagsIdLoading || tagsLoading) return <div>Loading...</div>;
+  if (showError || tagsIdError || tagsError) return <div>ERR</div>;
 
-    if (tagsId !== null) {
-      fetchTag();
-    }
-  }, [tagsId]);
-
-  if (error) return <div>ERR</div>;
-  if (!show) return null;
   return (
     <>
       <SubHeader />

@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
-import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { debounce } from "lodash";
 
 const theme = createTheme({
   palette: {
@@ -16,14 +16,24 @@ const theme = createTheme({
 
 const SearchBar = ({ onSearch }) => {
   const [searchString, setSearchString] = useState(""); // Add the useState hook
-  const onChange = useCallback(
-    (e) => {
-      setSearchString(e.target.value);
-      onSearch(e.target.value);
-      e.preventDefault();
-    },
+
+  // debounce 함수로 onSearch 호출을 제어
+  const debouncedSearch = useCallback(
+    debounce((value) => {
+      onSearch(value); // 일정 시간이 지난 후에만 onSearch 호출
+    }, 500), // 500ms 동안 입력이 없을 때만 호출
     [onSearch]
   );
+
+  const onChange = useCallback(
+    (e) => {
+      setSearchString(e.target.value); // 입력 값을 업데이트
+      debouncedSearch(e.target.value); // 디바운스된 검색 호출
+      e.preventDefault();
+    },
+    [debouncedSearch]
+  );
+
   return (
     <>
       <Paper
