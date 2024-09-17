@@ -2,7 +2,6 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import Done from "@mui/icons-material/Done";
 import styled from "styled-components";
-import { fetchEnableTagId } from "../../lib/api/Api";
 
 const Box = styled.div`
   background-color: #000000;

@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import MyCalendar from "../calendar/MyCalendar";
 import { fetchGalleryInfo } from "../../lib/api/Api";
 import Instagram from "@mui/icons-material/Instagram";
+import { useQuery } from "@tanstack/react-query";
 
 const DetailViewerBlock = styled.div`
   width: 100%;
@@ -329,8 +330,8 @@ const PhoneNum = styled.div`
 `;
 
 const DetailViewer = ({ show, color, tags }) => {
-  const [error, setError] = useState(null);
-  const [galleryInfo, setGalleryInfo] = useState(null);
+  // const [error, setError] = useState(null);
+  // const [galleryInfo, setGalleryInfo] = useState(null);
   const [latitude, setLatitude] = useState(null);
   const [longitude, setLongitude] = useState(null);
   const [value, onChange] = useState(new Date());
@@ -354,18 +355,29 @@ const DetailViewer = ({ show, color, tags }) => {
     instagram_search,
   } = show[0];
 
-  useEffect(() => {
-    const fetchGalleries = async () => {
-      try {
-        setError(null);
-        const data = await fetchGalleryInfo(gallery);
-        setGalleryInfo(data);
-      } catch (e) {
-        setError(e);
-      }
-    };
-    fetchGalleries();
-  }, [gallery]);
+  // useEffect(() => {
+  //   const fetchGalleries = async () => {
+  //     try {
+  //       setError(null);
+  //       const data = await fetchGalleryInfo(gallery);
+  //       setGalleryInfo(data);
+  //     } catch (e) {
+  //       setError(e);
+  //     }
+  //   };
+  //   fetchGalleries();
+  // }, [gallery]);
+  const {
+    data: galleryInfo,
+    error,
+    isLoading,
+  } = useQuery({
+    queryKey: ["galleryInfo", gallery], // queryKey는 고유하게 설정
+    queryFn: () => fetchGalleryInfo(gallery), // queryFn에서 데이터를 가져오는 함수 실행
+    enabled: !!gallery, // gallery 값이 존재할 때만 실행
+    retry: 2, // 실패 시 2번까지 재시도
+    staleTime: 1000 * 60 * 5, // 데이터가 5분 동안 fresh 상태 유지
+  });
 
   let gallery_add_word = "";
   let gallery_phone_num = "";
@@ -374,7 +386,7 @@ const DetailViewer = ({ show, color, tags }) => {
   let openingHoursObject;
   let site = "";
 
-  if (galleryInfo !== null) {
+  if (galleryInfo !== undefined) {
     gallery_add_word = galleryInfo.gallery_add_word;
     gallery_phone_num = galleryInfo.gallery_phone_num;
     business_hours = galleryInfo.business_hours;
@@ -473,24 +485,21 @@ const DetailViewer = ({ show, color, tags }) => {
           <strong>{show_name}</strong>
         </MainTitle>
         <Tags>
-          {
-            tags && tags[id] && Array.isArray(tags[id]) ? (
-              tags[id]
-                .sort((a, b) =>
-                  a.includes("사진촬영 가능")
-                    ? -1
-                    : b.includes("사진촬영 가능")
-                    ? 1
-                    : 0
-                )
-                .map((tag, index) => {
-                  return <div key={index}>#{tag}</div>;
-                })
-            ) : (
-              <div>태그 정보가 없습니다.</div>
-            ) /* tags[id]가 없을 때 출력할 메시지 */
-          }
+          {tags && Array.isArray(tags) ? (
+            tags
+              .sort((a, b) => {
+                if (a === "사진촬영 가능") return -1;
+                if (b === "사진촬영 가능") return 1;
+                return a.localeCompare(b); // 알파벳 순으로 나머지 정렬
+              })
+              .map((tag, index) => {
+                return <div key={index}>#{tag}</div>;
+              })
+          ) : (
+            <div>태그 정보가 없습니다.</div>
+          )}
         </Tags>
+
         {(show_term_start || show_term_end) && (
           <Term>
             {show_term_start} ~ {show_term_end}
@@ -529,7 +538,9 @@ const DetailViewer = ({ show, color, tags }) => {
             <BookingArea>
               <Booking color={color}>
                 <p>
-                  {show_price !== 0 ? `${show_price}원` : "무료 전시입니다"}
+                  {show_price !== 0
+                    ? `입장료: ${show_price}원`
+                    : "무료 전시입니다"}
                 </p>
                 <FileDownloadDoneSharpIcon />
               </Booking>

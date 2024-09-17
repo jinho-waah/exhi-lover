@@ -111,7 +111,6 @@ function KakaoMap({ lat, lng, flag, galleriesMarker }) {
       }
     });
   }, [galleriesMarker]);
-  console.log(selectedMarker);
   return (
     <div>
       <div
