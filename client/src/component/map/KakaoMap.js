@@ -75,7 +75,6 @@ function KakaoMap({ lat, lng, flag, galleriesMarker }) {
             top: document.body.scrollHeight,
             behavior: "smooth", // Optional: This provides a smooth scroll animation
           });
-
           setSelectedMarker(galleryMarker);
           setLastClickedMarker(
             setGalleryMarker.getPosition().getLat(),
@@ -112,7 +111,7 @@ function KakaoMap({ lat, lng, flag, galleriesMarker }) {
       }
     });
   }, [galleriesMarker]);
-
+  console.log(selectedMarker);
   return (
     <div>
       <div

@@ -28,8 +28,8 @@ const ShowContent = styled.div`
 
 const NoneShow = styled.div`
   color: white;
-  padding-left: 0.8rem;
-  height: 600px;
+  padding: 6px 0 0 18px;
+  height: 450px;
   p {
     margin: 0;
     margin-bottom: 0.4rem;
@@ -196,7 +196,6 @@ function Search() {
         </ThemeProvider>
         <NoneShow>
           <p>검색 결과에 맞는 전시가 없습니다.</p>
-          <p>다른 검색어를 입력해주세요.</p>
         </NoneShow>
       </>
     );
