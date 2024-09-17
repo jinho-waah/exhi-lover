@@ -1,9 +1,8 @@
 /*global kakao*/
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import icon from "../../lib/icon/loc.png";
 import iconDark from "../../lib/icon/dot.png";
 import SwipeableEdgeDrawer from "./SwipeableEdgeDrawer";
-import FetchShowTags from "./FetchShowTags";
 import useBearsStore from "../../lib/zustand/bearsStore";
 
 function KakaoMap({ lat, lng, flag, galleriesMarker }) {
