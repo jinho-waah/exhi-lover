@@ -4,7 +4,7 @@
 
 ![스크린샷 2024-09-16 오후 6 21 25](https://github.com/user-attachments/assets/717a97f0-dc62-49ec-9b1d-cd105cbee2c3)
 
-> Art-lover는 전시회를 손쉽게 검색 할 수 있는 입니다.<br/>
+> Art-lover는 전시회를 손 쉽게 검색 할 수 있는 입니다.<br/>
 > Frontend by 조진호<br/>
 > Backend by 조진호 <br/>
 > Designed by 조진호 <br/>
@@ -18,33 +18,37 @@
 <tr>
  <td align="center">Front-End</td>
  <td>
-   <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=React&logoColor=white"/>&nbsp 
-  <img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black"/>&nbsp
-  <img src="https://img.shields.io/badge/styled--Components-db7093?style=for-the-badge&logo=styled-Components&logoColor=black"/>&nbsp 
-  <img src="https://img.shields.io/badge/Axios-white?style=for-the-badge&logo=Axios&logoColor=black"/>&nbsp 
-  <img src="https://img.shields.io/badge/ReactQuery-FF4154?style=for-the-badge&logo=ReactQuery&logoColor=black"/>&nbsp 
-   <img src="https://img.shields.io/badge/Zustand-61DAFB?style=for-the-badge&logo=React&logoColor=white"/>&nbsp 
-   
-  
-	 
+	<img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=React&logoColor=white"/>&nbsp 
+  	<img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black"/>&nbsp
+  	<img src="https://img.shields.io/badge/styled--Components-db7093?style=for-the-badge&logo=styled-Components&logoColor=black"/>&nbsp 
+  	<img src="https://img.shields.io/badge/Axios-white?style=for-the-badge&logo=Axios&logoColor=black"/>&nbsp 
+  	<img src="https://img.shields.io/badge/ReactQuery-FF4154?style=for-the-badge&logo=ReactQuery&logoColor=black"/>&nbsp 
+   	<img src="https://img.shields.io/badge/Zustand-61DAFB?style=for-the-badge&logo=React&logoColor=white"/>&nbsp 
  </td>
 </tr>
+	
+<tr>
+ <td align="center">Back-End</td>
+ <td>
+	 <img src="https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=Node.js&logoColor=white"/>&nbsp
+	 <img src="https://img.shields.io/badge/Express-000000?style=flat-square&logo=Express&logoColor=white"/>&nbsp
+</tr>
+
 <tr>
  <td align="center">디자인</td>
  <td>
     <img src="https://img.shields.io/badge/Figma-d90f42?style=for-the-badge&logo=Figma&logoColor=white"/>&nbsp  
  </td>
 </tr>
+
 <tr>
  <td align="center">IDE</td>
  <td>
     <img src="https://img.shields.io/badge/VSCode-007ACC?style=for-the-badge&logo=Visual%20Studio%20Code&logoColor=white"/>&nbsp
 </tr>
-<tr>
+
  <td align="center">배포</td>
  <td>
-	 <img src="https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=Node.js&logoColor=white"/>&nbsp
-    <img src="https://img.shields.io/badge/Express-000000?style=flat-square&logo=Express&logoColor=white"/>&nbsp
 	 <img src="https://img.shields.io/badge/cPanel-FF6C2C?style=flat-square&logo=cPanel&logoColor=white"/>&nbsp
 </tr>
 </table>
@@ -430,11 +434,11 @@ function Search() {
 
 ## **5. 트러블 슈팅**
 
-<b style="font-size:17px">문제</b><br/>
+<b style="font-size:18px">문제1</b><br/>
 
 - Browser에서 Refresh를 하면 중요 state 값이 default로 돌아오는 문제 발생 
 
-<b style="font-size:17px">해결</b><br/>
+<b style="font-size:18px">해결1</b><br/>
 
 - (해결 과정 중 발생한 문제) 
 	- Zustand로 상태 관리 하고 persist의 getStorage를 활용<br/>
@@ -443,10 +447,32 @@ function Search() {
 - (해결)
 	- getStorage 대신 partialize를 이용하여 원하는 state만 저장 <br/>
 
+<b style="font-size:18px">문제2</b><br/>
 
-<br/>
+- 사용자가 검색 입력창에 타이핑을 할 때, 입력하는 각 문자마다 onSearch 함수가 호출되고, 불필요한 API 호출이 이뤄지게 됨.
+![스크린샷 2024-09-18 오전 12 07 58](https://github.com/user-attachments/assets/4eabc55a-4cd6-4244-9750-1faf53356347)
+
+<b style="font-size:18px">해결2</b><br/>
+
+- debounce를 이용해서 사용자가 입력을 멈출때 500ms대기 <br/>
+- 사용자가 500ms 이내로 타이핑 할 경우 api 요청을 하지 않음 <br/>
+- 마지막 타이핑으로부터 500ms 지나면 api 호출 <br/>
 
 
+<b style="font-size:18px">문제3</b><br/>
 
+- API를 불러오는 작업이 많아 중복되는 데이터 처리를 위해 캐싱할 필요가 있음
+
+<b style="font-size:18px">해결3</b><br/>
+
+- TanstackQuery를 이용하여 API 호출을 최적화함 <br/>
+
+<b style="font-size:18px">문제4</b><br/>
+
+- TanstackQuery를 이용해서 API 관리하는 작업중 게시물에 접속했을 때, 브라우저가 이전의 스크롤 위치를 기억하고 다시 해당 페이지에 접근할 때 해당 위치로 자동으로 이동하는 현상 발생
+
+<b style="font-size:18px">해결4</b><br/>
+
+- window.scrollTo(0, 0); 를 적용하여 해결 <br/>
 
 </details>
