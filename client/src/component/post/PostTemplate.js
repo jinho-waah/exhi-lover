@@ -2,16 +2,18 @@ import * as React from "react";
 import styled from "styled-components";
 import Post from "./Post";
 import colorSet from "../../lib/styles/colorSet";
-import { useEffect, useState, memo } from "react";
+import { memo } from "react";
 import { Pagination } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
 import { fetchShowTagsId, fetchTagName } from "../../lib/api/Api";
+import PostSkeleton from "./PostSkeleton";
 
 const TemplateBlock = styled.div`
   padding-top: 2px;
   box-sizing: border-box;
   align-items: center;
   flex-flow: row wrap;
-  justify-content: center; /* Center content horizontally */
+  justify-content: center;
 `;
 
 const PaginationBlock = styled.div`
@@ -24,13 +26,13 @@ const PaginationBlock = styled.div`
 const StyledPagination = styled(Pagination)`
   && {
     .MuiPaginationItem-root {
-      color: white; // Change text color
-      border-color: white; // Change border color
+      color: white;
+      border-color: white;
       &.Mui-selected {
-        background-color: #333; // Change background color for selected page
+        background-color: #333;
       }
       &:hover {
-        background-color: #555; // Change background color on hover
+        background-color: #555;
       }
     }
   }
@@ -42,93 +44,76 @@ const PostTemplate = ({
   setPaginationValue,
   pageCount,
 }) => {
-  const [tags, setTags] = useState(null);
-  const [tagsId, setTagsId] = useState(null);
-  const [error, setError] = useState(null);
-
   const handleChange = (event, newPage) => {
-    setPaginationValue(newPage); // Update the paginationValue state with the new page number
+    setPaginationValue(newPage); // 페이지 변경
   };
 
-  // console.log(shows);
+  // fetchShowTagsId와 fetchTagName을 병합하여 태그 정보를 가져오는 로직
+  const {
+    data: tags,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["tags", shows],
+    queryFn: async () => {
+      const tagsIdData = await Promise.all(
+        shows.map(async (show) => {
+          const data = await fetchShowTagsId(show.id);
+          return data;
+        })
+      );
 
-  useEffect(() => {
-    const fetchTagsId = async () => {
-      try {
-        setError(null);
-        const tagsIdData = await Promise.all(
-          shows.map(async (show) => {
-            const data = await fetchShowTagsId(show.id);
+      const tagsIdArray = tagsIdData.reduce((acc, innerArray) => {
+        innerArray.forEach((row) => {
+          const { exhibition_id, tag_id } = row;
+          const index = acc.findIndex(
+            (obj) => obj.exhibition_id === exhibition_id
+          );
+          if (index === -1) {
+            acc.push({ exhibition_id, tags: [tag_id] });
+          } else {
+            acc[index].tags.push(tag_id);
+          }
+        });
+        return acc;
+      }, []);
+
+      const tagNamesMap = {};
+      for (const { exhibition_id, tags } of tagsIdArray) {
+        const tagNames = await Promise.all(
+          tags.map(async (tagId) => {
+            const data = await fetchTagName(tagId);
             return data;
           })
         );
-        if (tagsIdData.length > 0) {
-          const tagsIdArray = tagsIdData.reduce((acc, innerArray) => {
-            innerArray.forEach((row) => {
-              const { exhibition_id, tag_id } = row;
-              const index = acc.findIndex(
-                (obj) => obj.exhibition_id === exhibition_id
-              );
-              if (index === -1) {
-                acc.push({ exhibition_id, tags: [tag_id] });
-              } else {
-                acc[index].tags.push(tag_id);
-              }
-            });
-            return acc;
-          }, []);
-          setTagsId(tagsIdArray);
-        }
-      } catch (e) {
-        setError(e);
+        tagNamesMap[exhibition_id] = tagNames;
       }
-    };
 
-    fetchTagsId();
-  }, [shows]);
+      return tagNamesMap;
+    },
+    enabled: shows.length > 0, // shows가 있을 때만 실행
+    staleTime: 1000 * 60 * 10, // 10분 동안 데이터가 신선하게 유지
+    cacheTime: 1000 * 60 * 30, // 30분 동안 캐시 유지
+  });
 
-  useEffect(() => {
-    const fetchTag = async () => {
-      try {
-        setError(null);
-        const tagData = await Promise.all(
-          tagsId.map(async ({ exhibition_id, tags }) => {
-            const tagNames = await Promise.all(
-              tags.map(async (tagId) => {
-                const data = await fetchTagName(tagId);
-                return data;
-              })
-            );
-            return { exhibition_id, tagNames };
-          })
-        );
-
-        setTags(
-          tagData.reduce((acc, { exhibition_id, tagNames }) => {
-            acc[exhibition_id] = tagNames;
-            return acc;
-          }, {})
-        );
-      } catch (e) {
-        setError(e);
-      }
-    };
-
-    if (tagsId !== null) {
-      fetchTag();
-    }
-  }, [tagsId]);
+  if (isLoading)
+    return (
+      <div>
+        <PostSkeleton></PostSkeleton>
+      </div>
+    );
+  if (error) return <div>Error occurred: {error.message}</div>;
 
   return (
     <>
       <TemplateBlock>
         {shows.map((show, index) => {
-          const key = `${show.show_name}`; // create unique key prop value
-          const colorIndex = index % colorSet.length; // determine color index based on position in array
-          const color = colorSet[colorIndex]; // get color from colorSet array
+          const key = `${show.show_name}`; // 고유한 key 생성
+          const colorIndex = index % colorSet.length; // 색상 인덱스
+          const color = colorSet[colorIndex]; // colorSet에서 색상 가져오기
           return (
             <Post show={show} key={key} color={color} tags={tags?.[show.id]} />
-          ); // pass color as prop to Post component
+          ); // Post 컴포넌트에 태그 전달
         })}
         <PaginationBlock>
           <StyledPagination

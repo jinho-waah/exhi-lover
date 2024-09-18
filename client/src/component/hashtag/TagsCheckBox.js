@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Done from "@mui/icons-material/Done";
 import styled from "styled-components";
 
@@ -71,18 +71,23 @@ const Item = styled.div`
     margin-right: 1px;
   }
 `;
-
 const TagsCheckBox = ({ title, items, handleCheckedItems, tags }) => {
   const [checkedItems, setCheckedItems] = useState([]);
   const [disableTagIds, setDisableTagIds] = useState([]);
   const [error, setError] = useState(null);
 
-  const objectKeys = Object.keys(items); // string, object의 앞
-  const valueKeys = Object.values(items); // int, object의 뒤
+  const objectKeys = Object.keys(items);
+  const valueKeys = React.useMemo(() => Object.values(items), [items]); // valueKeys를 useMemo로 캐싱
 
-  useEffect(() => {
+  // useCallback으로 handleCheckedItems 최적화
+  const memoizedHandleCheckedItems = useCallback(() => {
     handleCheckedItems(checkedItems);
-  }, [handleCheckedItems, checkedItems]);
+  }, [checkedItems, handleCheckedItems]);
+
+  // 의존성 배열에 정확히 필요한 값만 넣어서 무한 루프 방지
+  useEffect(() => {
+    memoizedHandleCheckedItems();
+  }, [memoizedHandleCheckedItems]);
 
   useEffect(() => {
     const fetchTagId = async () => {
@@ -101,14 +106,14 @@ const TagsCheckBox = ({ title, items, handleCheckedItems, tags }) => {
     };
 
     fetchTagId();
-  }, [tags]);
+  }, [tags, valueKeys]);
 
   const handleItemClick = (index) => {
-    if (checkedItems.includes(index)) {
-      setCheckedItems((val) => val.filter((text) => text !== index));
-    } else {
-      setCheckedItems((val) => [...val, index]);
-    }
+    setCheckedItems((prev) =>
+      prev.includes(index)
+        ? prev.filter((text) => text !== index)
+        : [...prev, index]
+    );
   };
 
   const handleReset = () => {
@@ -130,7 +135,7 @@ const TagsCheckBox = ({ title, items, handleCheckedItems, tags }) => {
             onClick={() => handleItemClick(items[item])}
             disable={disableTagIds.includes(items[item])}
           >
-            {checkedItems.includes(item) && <Done />}
+            {checkedItems.includes(items[item]) && <Done />}
             {item}
           </Item>
         ))}
