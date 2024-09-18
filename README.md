@@ -462,6 +462,7 @@ function Search() {
 <b style="font-size:18px">문제3</b><br/>
 
 - API를 불러오는 작업이 많아 중복되는 데이터 처리를 위해 캐싱할 필요가 있음
+- 비동기 작업이 여러 번 중첩되어 있으며, 성능 최적화를 위해 useEffect를 다수 사용함. 그러나 이러한 방식은 중복 API 호출 및 비효율성을 유발할 수 있어 개선할 필요가 있음
 
 <b style="font-size:18px">해결3</b><br/>
 
@@ -469,10 +470,26 @@ function Search() {
 
 <b style="font-size:18px">문제4</b><br/>
 
-- TanstackQuery를 이용해서 API 관리하는 작업중 게시물에 접속했을 때, 브라우저가 이전의 스크롤 위치를 기억하고 다시 해당 페이지에 접근할 때 해당 위치로 자동으로 이동하는 현상 발생
+- TanstackQuery를 이용해서 API 관리하는 작업중, 게시물에 접속했을 때, 브라우저가 이전의 스크롤 위치를 기억하고 다시 해당 페이지에 접근할 때 이전 스크롤 위치에서 랜더링 되는 현상 발생
 
 <b style="font-size:18px">해결4</b><br/>
 
 - window.scrollTo(0, 0); 를 적용하여 해결 <br/>
+
+<b style="font-size:18px">문제5</b><br/>
+
+- TagsCheckBox.js 수정중 useEffect에서 valueKeys가 의존성으로 설정되어 있는데, 이 값이 매번 새로운 배열로 인식되어 fetchTagId가 계속 호출 되어 무한 re-rendering 발생
+
+<b style="font-size:18px">해결5</b><br/>
+
+- Object.values(items)는 매 렌더링마다 새로운 배열을 생성하므로 이를 useMemo를 사용하여 캐싱
+![스크린샷 2024-09-18 오전 9 28 53](https://github.com/user-attachments/assets/32893e3d-4a2b-442a-807a-f89b35cf72a1)
+
+<b style="font-size:18px">문제6</b><br/>
+- 태그 ID와 태그 이름을 병렬로 요청하지 않고, 한 번의 요청에서 처리할 수 있도록 구조를 변경하면 성능이 개선 가능
+  
+<b style="font-size:18px">해결6</b><br/>
+
+- 태그 ID와 태그 이름을 한 번의 병합된 비동기 작업에서 처리하여, 불필요한 데이터 가공을 최소화<br/>
 
 </details>
