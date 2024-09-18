@@ -54,16 +54,16 @@ const Item = styled.div`
   border-radius: 11px;
   padding: 3px 8px;
   background-color: ${({ checked }) => (checked ? "white" : "black")};
-  color: ${({ checked, disable }) =>
-    disable ? "#656565" : checked ? "black" : "white"};
-  border: ${({ checked, disable }) =>
-    disable
+  color: ${({ checked, isDisabled }) =>
+    isDisabled ? "#656565" : checked ? "black" : "white"};
+  border: ${({ checked, isdisabled }) =>
+    isdisabled
       ? "0.11rem solid #555555"
       : checked
       ? "0.11rem solid black"
       : "0.09rem solid #afafaf"};
-  cursor: ${({ disable }) => (disable ? "not-allowed" : "pointer")};
-  pointer-events: ${({ disable }) => (disable ? "none" : "auto")};
+  cursor: ${({ isDisabled }) => (isDisabled ? "not-allowed" : "pointer")};
+  pointer-events: ${({ isDisabled }) => (isDisabled ? "none" : "auto")};
 
   svg {
     font-size: 1.1rem;
@@ -71,20 +71,20 @@ const Item = styled.div`
     margin-right: 1px;
   }
 `;
+
 const TagsCheckBox = ({ title, items, handleCheckedItems, tags }) => {
   const [checkedItems, setCheckedItems] = useState([]);
   const [disableTagIds, setDisableTagIds] = useState([]);
   const [error, setError] = useState(null);
 
   const objectKeys = Object.keys(items);
-  const valueKeys = React.useMemo(() => Object.values(items), [items]); // valueKeys를 useMemo로 캐싱
+  const valueKeys = React.useMemo(() => Object.values(items), [items]);
 
   // useCallback으로 handleCheckedItems 최적화
   const memoizedHandleCheckedItems = useCallback(() => {
     handleCheckedItems(checkedItems);
   }, [checkedItems, handleCheckedItems]);
 
-  // 의존성 배열에 정확히 필요한 값만 넣어서 무한 루프 방지
   useEffect(() => {
     memoizedHandleCheckedItems();
   }, [memoizedHandleCheckedItems]);
@@ -133,7 +133,16 @@ const TagsCheckBox = ({ title, items, handleCheckedItems, tags }) => {
             key={items[item]}
             checked={checkedItems.includes(items[item])}
             onClick={() => handleItemClick(items[item])}
-            disable={disableTagIds.includes(items[item])}
+            isdisabled={disableTagIds.includes(items[item]) ? true : undefined} // `true`일 때만 속성 추가
+            style={{
+              pointerEvents: disableTagIds.includes(items[item])
+                ? "none"
+                : "auto",
+              cursor: disableTagIds.includes(items[item])
+                ? "not-allowed"
+                : "pointer",
+              opacity: disableTagIds.includes(items[item]) ? 0.5 : 1, // 시각적으로 비활성화 상태 표현
+            }}
           >
             {checkedItems.includes(items[item]) && <Done />}
             {item}
