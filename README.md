@@ -486,7 +486,7 @@ function Search() {
 ![스크린샷 2024-09-18 오전 9 28 53](https://github.com/user-attachments/assets/32893e3d-4a2b-442a-807a-f89b35cf72a1)
 
 <b style="font-size:18px">문제6</b><br/>
-- 태그 ID와 태그 이름을 병렬로 요청하지 않고, 한 번의 요청에서 처리할 수 있도록 구조를 변경하면 성능이 개선 가능
+- 태그 ID와 태그 이름을 병렬로 요청하지 않고, 한 번의 요청에서 처리할 수 있도록 구조를 변경하면 성능 개선 가능
   
 <b style="font-size:18px">해결6</b><br/>
 
