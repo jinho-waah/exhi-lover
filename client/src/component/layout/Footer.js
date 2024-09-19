@@ -52,7 +52,7 @@ const Footer = () => {
       <HrLine />
       <Foot>
         <p>
-          2023 Exhi-lover published. Art is Life. Life is Art. <br />
+          2023 Art-lover published. Art is Life. Life is Art. <br />
           MADE BY{" "}
           <Link to="https://www.instagram.com/exhi_lover/" target="_blank">
             <InstagramIcon />
