@@ -106,7 +106,7 @@ function MainPage({ val }) {
       <GlobalStyle />
       <MainHeader />
       <MainImage>
-        <img src="/upload/main/3.webp" alt="" />
+        <img src="/upload/main/3.webp" alt="" loading="lazy" />
       </MainImage>
       <InformBox>
         <InformTitle>Welcome to Art-lover</InformTitle>

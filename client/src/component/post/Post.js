@@ -178,7 +178,7 @@ const Post = ({ show, color, tags }) => {
                 </PostContent>
               </ContextBox>
               <ImageBlock>
-                <img src={imgSrc} alt="" />
+                <img src={imgSrc} alt={show_name} loading="lazy" />
               </ImageBlock>
             </HoverEffect>
           </ContextBoxes>

@@ -2,8 +2,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import icon from "../../lib/icon/loc.png";
 import iconDark from "../../lib/icon/dot.png";
-import SwipeableEdgeDrawer from "./SwipeableEdgeDrawer";
+// import SwipeableEdgeDrawer from "./SwipeableEdgeDrawer";
 import useBearsStore from "../../lib/zustand/bearsStore";
+
+const SwipeableEdgeDrawer = React.lazy(() => import("./SwipeableEdgeDrawer"));
 
 function KakaoMap({ lat, lng, flag, galleriesMarker }) {
   const mapHeight = (window.innerWidth >= 560 ? 560 : window.innerWidth) * 1.1;

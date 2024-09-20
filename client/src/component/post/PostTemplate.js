@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useCallback, useRef } from "react";
 import styled from "styled-components";
 import Post from "./Post";
 import colorSet from "../../lib/styles/colorSet";
@@ -44,9 +45,20 @@ const PostTemplate = ({
   setPaginationValue,
   pageCount,
 }) => {
-  const handleChange = (event, newPage) => {
-    setPaginationValue(newPage); // 페이지 변경
-  };
+  const observer = useRef();
+
+  const handleObserver = useCallback(
+    (node) => {
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && paginationValue < pageCount) {
+          setPaginationValue((prevPage) => prevPage + 1); // 다음 페이지 로드
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [paginationValue, pageCount, setPaginationValue]
+  );
 
   // fetchShowTagsId와 fetchTagName을 병합하여 태그 정보를 가져오는 로직
   const {
@@ -111,15 +123,35 @@ const PostTemplate = ({
           const key = `${show.show_name}`; // 고유한 key 생성
           const colorIndex = index % colorSet.length; // 색상 인덱스
           const color = colorSet[colorIndex]; // colorSet에서 색상 가져오기
+
+          if (index === shows.length - 1) {
+            return (
+              <div ref={handleObserver} key={key}>
+                <Post
+                  show={show}
+                  color={color}
+                  tags={tags?.[show.id]}
+                  loading="lazy" // 이미지 Lazy Loading
+                />
+              </div>
+            );
+          }
+
           return (
-            <Post show={show} key={key} color={color} tags={tags?.[show.id]} />
-          ); // Post 컴포넌트에 태그 전달
+            <Post
+              show={show}
+              key={key}
+              color={color}
+              tags={tags?.[show.id]}
+              loading="lazy" // 이미지 Lazy Loading
+            />
+          );
         })}
         <PaginationBlock>
           <StyledPagination
             count={pageCount}
             page={paginationValue}
-            onChange={handleChange}
+            onChange={(event, newPage) => setPaginationValue(newPage)}
           />
         </PaginationBlock>
       </TemplateBlock>
